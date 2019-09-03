@@ -17,7 +17,7 @@ def clear_surface():
 
 # Creates the surface
 def configure_event_cb(wid, evt):
-    global surface
+    global surface,width,height
     if surface is not None:
         del surface
         surface = None
@@ -36,16 +36,49 @@ def draw_cb(wid, cr):
     global surface
     cr.set_source_surface(surface, 0, 0)
     cr.paint()
+    cr.move_to(0, height/2)
+    cr.line_to(width, height/2)
+    cr.move_to(width/2, 0)
+    cr.line_to(width/2, height)
     return False
 
 class Handler:
     # Function that will be called when the ok button is pressed
-    def btn_create_new_object(self, btn):
+    def btn_newObj_clicked_cb(self, btn):
         cr = cairo.Context(surface)
-        cr.move_to(10, 10)
-        cr.line_to(1000, 1000)
+        cr.move_to(0, height/2)
+        cr.line_to(width, height/2)
+        cr.move_to(width/2, 0)
+        cr.line_to(width/2, height)
         cr.stroke()
         window_widget.queue_draw()
+    
+    def btn_rotateX_toggled_cb(self,btn):
+        return True
+
+    def btn_rotateY_toggled_cb(self,btn):
+        return True
+
+    def btn_rotateZ_toggled_cb(self,btn):
+        return True
+
+    def btn_zoomPlus_clicked_cb(self,btn):
+        return True
+        
+    def btn_zoomMinus_clicked_cb(self,btn):
+        return True
+
+    def btn_moveUp_clicked_cb(self,btn):
+        return True
+
+    def btn_moveDown_clicked_cb(self,btn):
+        return True
+
+    def btn_moveRight_clicked_cb(self,btn):
+        return True
+
+    def btn_moveLeft_clicked_cb(self,btn):
+        return True 
 
 
 gtkBuilder = Gtk.Builder()
