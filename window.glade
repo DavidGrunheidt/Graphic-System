@@ -501,7 +501,7 @@
                         <property name="height_request">0</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Coordenadas cursor:</property>
+                        <property name="label" translatable="yes">Coordenadas do cursor:</property>
                       </object>
                       <packing>
                         <property name="y">26</property>
@@ -513,7 +513,7 @@
                         <property name="height_request">0</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Coordenadas objeto selecionado:</property>
+                        <property name="label" translatable="yes">Coordenadas do objeto selecionado:</property>
                       </object>
                       <packing>
                         <property name="y">47</property>
@@ -528,7 +528,7 @@
                         <property name="label" translatable="yes">X: 0; Y: 0; Z: 0</property>
                       </object>
                       <packing>
-                        <property name="x">144</property>
+                        <property name="x">164</property>
                         <property name="y">26</property>
                       </packing>
                     </child>
@@ -541,7 +541,7 @@
                         <property name="label" translatable="yes">X: 0; Y: 0; Z: 0</property>
                       </object>
                       <packing>
-                        <property name="x">229</property>
+                        <property name="x">249</property>
                         <property name="y">47</property>
                       </packing>
                     </child>
