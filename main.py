@@ -40,10 +40,10 @@ def draw_cb(wid, cr):
 
 class Handler:
     # Function that will be called when the ok button is pressed
-    def btn_ok_clicked_cb(self, btn):
+    def btn_create_new_object(self, btn):
         cr = cairo.Context(surface)
-        cr.move_to(200, 100)
-        cr.line_to(300, 50)
+        cr.move_to(10, 10)
+        cr.line_to(1000, 1000)
         cr.stroke()
         window_widget.queue_draw()
 
