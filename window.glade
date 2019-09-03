@@ -77,7 +77,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <signal name="clicked" handler="btn_create_new_object" swapped="no"/>
+                            <signal name="clicked" handler="btn_newObj_clicked_cb" swapped="no"/>
                           </object>
                           <packing>
                             <property name="resize">False</property>
@@ -125,7 +125,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_mv_up" swapped="no"/>
+                                    <signal name="clicked" handler="btn_moveUp_clicked_cb" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">100</property>
@@ -140,7 +140,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_mv_down" swapped="no"/>
+                                    <signal name="clicked" handler="btn_moveDown_clicked_cb" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">96</property>
@@ -155,7 +155,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_mv_left" swapped="no"/>
+                                    <signal name="clicked" handler="btn_moveLeft_clicked_cb" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">78</property>
@@ -170,7 +170,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_mv_right" swapped="no"/>
+                                    <signal name="clicked" handler="btn_moveRight_clicked_cb" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">119</property>
@@ -198,7 +198,6 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_zoom_in" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">5</property>
@@ -213,7 +212,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_zoom_out" swapped="no"/>
+                                    <signal name="clicked" handler="btn_zoomPlus_clicked_cb" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">34</property>
@@ -314,7 +313,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="btn_x_toggled" swapped="no"/>
+                                            <signal name="toggled" handler="btn_rotateX_toggled_cb" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">91</property>
@@ -329,7 +328,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="btn_y_toggled" swapped="no"/>
+                                            <signal name="toggled" handler="btn_rotateY_toggled_cb" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">118</property>
@@ -344,7 +343,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="btn_z_toggled" swapped="no"/>
+                                            <signal name="toggled" handler="btn_rotateZ_toggled_cb" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">145</property>
@@ -501,7 +500,7 @@
                         <property name="height_request">0</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Coordenadas do cursor:</property>
+                        <property name="label" translatable="yes">Coordenadas cursor:</property>
                       </object>
                       <packing>
                         <property name="y">26</property>
@@ -513,7 +512,7 @@
                         <property name="height_request">0</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Coordenadas do objeto selecionado:</property>
+                        <property name="label" translatable="yes">Coordenadas objeto selecionado:</property>
                       </object>
                       <packing>
                         <property name="y">47</property>
@@ -528,7 +527,7 @@
                         <property name="label" translatable="yes">X: 0; Y: 0; Z: 0</property>
                       </object>
                       <packing>
-                        <property name="x">164</property>
+                        <property name="x">144</property>
                         <property name="y">26</property>
                       </packing>
                     </child>
@@ -541,7 +540,7 @@
                         <property name="label" translatable="yes">X: 0; Y: 0; Z: 0</property>
                       </object>
                       <packing>
-                        <property name="x">249</property>
+                        <property name="x">229</property>
                         <property name="y">47</property>
                       </packing>
                     </child>
