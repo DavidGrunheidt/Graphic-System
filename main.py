@@ -44,7 +44,7 @@ def draw_cb(wid, cr):
 
 class Handler:
     # Function that will be called when the ok button is pressed
-    def btn_newObj_clicked_cb(self, btn):
+    def btn_newObj_clicked(self, btn):
         cr = cairo.Context(surface)
         cr.move_to(0, height/2)
         cr.line_to(width, height/2)
@@ -53,31 +53,31 @@ class Handler:
         cr.stroke()
         window_widget.queue_draw()
     
-    def btn_rotateX_toggled_cb(self,btn):
+    def btn_rotateX_toggled(self,btn):
         return True
 
-    def btn_rotateY_toggled_cb(self,btn):
+    def btn_rotateY_toggled(self,btn):
         return True
 
-    def btn_rotateZ_toggled_cb(self,btn):
+    def btn_rotateZ_toggled(self,btn):
         return True
 
-    def btn_zoomPlus_clicked_cb(self,btn):
+    def btn_zoomIn_clicked(self,btn):
         return True
         
-    def btn_zoomMinus_clicked_cb(self,btn):
+    def btn_zoomOut_clicked(self,btn):
         return True
 
-    def btn_moveUp_clicked_cb(self,btn):
+    def btn_moveUp_clicked(self,btn):
         return True
 
-    def btn_moveDown_clicked_cb(self,btn):
+    def btn_moveDown_clicked(self,btn):
         return True
 
-    def btn_moveRight_clicked_cb(self,btn):
+    def btn_moveRight_clicked(self,btn):
         return True
 
-    def btn_moveLeft_clicked_cb(self,btn):
+    def btn_moveLeft_clicked(self,btn):
         return True 
 
 

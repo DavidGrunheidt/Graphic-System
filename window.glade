@@ -77,7 +77,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <signal name="clicked" handler="btn_newObj_clicked_cb" swapped="no"/>
+                            <signal name="clicked" handler="btn_newObj_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="resize">False</property>
@@ -125,7 +125,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_moveUp_clicked_cb" swapped="no"/>
+                                    <signal name="clicked" handler="btn_moveUp_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">100</property>
@@ -140,7 +140,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_moveDown_clicked_cb" swapped="no"/>
+                                    <signal name="clicked" handler="btn_moveDown_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">96</property>
@@ -155,7 +155,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_moveLeft_clicked_cb" swapped="no"/>
+                                    <signal name="clicked" handler="btn_moveLeft_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">78</property>
@@ -170,7 +170,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_moveRight_clicked_cb" swapped="no"/>
+                                    <signal name="clicked" handler="btn_moveRight_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">119</property>
@@ -198,6 +198,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="btn_zoomIn_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">5</property>
@@ -212,7 +213,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_zoomPlus_clicked_cb" swapped="no"/>
+                                    <signal name="clicked" handler="btn_zoomOut_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">34</property>
@@ -313,7 +314,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="btn_rotateX_toggled_cb" swapped="no"/>
+                                            <signal name="toggled" handler="btn_rotateX_toggled" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">91</property>
@@ -328,7 +329,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="btn_rotateY_toggled_cb" swapped="no"/>
+                                            <signal name="toggled" handler="btn_rotateY_toggled" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">118</property>
@@ -343,7 +344,7 @@
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="btn_rotateZ_toggled_cb" swapped="no"/>
+                                            <signal name="toggled" handler="btn_rotateZ_toggled" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">145</property>
@@ -478,7 +479,7 @@
                         <property name="label" translatable="yes">Escala:</property>
                       </object>
                       <packing>
-                        <property name="y">3</property>
+                        <property name="y">4</property>
                       </packing>
                     </child>
                     <child>
@@ -491,7 +492,7 @@
                       </object>
                       <packing>
                         <property name="x">51</property>
-                        <property name="y">3</property>
+                        <property name="y">5</property>
                       </packing>
                     </child>
                     <child>
