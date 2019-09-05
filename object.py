@@ -5,3 +5,4 @@ class Object:
 		self.isPoint = len(coordinates) == 1
 		self.isLine = len(coordinates) == 2
 		self.isWireframe = len(coordinates) > 2
+		self.type = "poit" if self.isPoint else "line" if self.isLine else "wireframe"

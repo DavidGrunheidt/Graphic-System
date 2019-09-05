@@ -3,6 +3,7 @@ import cairo
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from objectManager import *
 
 surface = None
 
@@ -34,7 +35,7 @@ def clear_surface():
 
 # Creates the surface
 def configure_event_cb(wid, evt):
-    global surface
+    global surface, width, height
     if surface is not None:
         del surface
         surface = None
@@ -57,14 +58,16 @@ def draw_cb(wid, cr):
 
 class Handler:
     # Function that will be called when the ok button is pressed
-    def btn_newObj_clicked(self, btn):
-        cr = cairo.Context(surface)
-        cr.move_to(0, height/2)
-        cr.line_to(width, height/2)
-        cr.move_to(width/2, 0)
-        cr.line_to(width/2, height)
-        cr.stroke()
-        window_widget.queue_draw()
+    def btn_newObj_clicked(self, widget):
+        # cr = cairo.Context(surface)
+        # cr.move_to(0, height/2)
+        # cr.line_to(width, height/2)
+        # cr.move_to(width/2, 0)
+        # cr.line_to(width/2, height)
+        # cr.stroke()
+        # window_widget.queue_draw()
+        comboBox = gtkBuilder.get_object('button_new_object')
+        comboBox.set_active(0)
     
     def btn_rotateX_toggled(self,btn):
         pass

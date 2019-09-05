@@ -72,12 +72,19 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkButton" id="button_new_object">
-                            <property name="label" translatable="yes">Novo objeto</property>
+                          <object class="GtkComboBoxText" id="button_new_object">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <signal name="clicked" handler="btn_newObj_clicked" swapped="no"/>
+                            <property name="can_focus">False</property>
+                            <property name="active">0</property>
+                            <property name="button_sensitivity">on</property>
+                            <property name="active_id">0</property>
+                            <items>
+                              <item id="0" translatable="yes">Novo objeto</item>
+                              <item id="1" translatable="yes">Novo ponto</item>
+                              <item id="2" translatable="yes">Nova linha</item>
+                              <item id="3" translatable="yes">Novo wireframe</item>
+                            </items>
+                            <signal name="changed" handler="btn_newObj_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="resize">True</property>
