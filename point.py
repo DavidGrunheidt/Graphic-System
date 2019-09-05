@@ -1,8 +1,10 @@
-from objectManager import ObjectTypeEnum
-from object import Object
+class Point():
+	isPoint = True
+	isLine = False
+	isPolygon = False
 
-class Point(Object):
-	def __init__(self, name: String, x: Float, y: Float):
-		super().__init__(self, POINT, name)
+	def __init__(self, name: str, x: float = 0, y: float = 0, z: float = 0) -> None:
+		self.name = name
 		self.x = x
 		self.y = y
+		self.z = z

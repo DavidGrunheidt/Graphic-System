@@ -1,7 +1,10 @@
-from objectManager import ObjectTypeEnum
-from object import Object
+from point import Point
 
-class Polygon(Object):
-	def __init__(self, name: String, points):
-		super().__init__(self, POLYGON, name)
-		self.
+class Polygon():
+	isPoint = False
+	isLine = False
+	isPolygon = True
+
+	def __init__(self, name: str, points: 'list of points') -> None:
+		self.name = name
+		self.points = points
