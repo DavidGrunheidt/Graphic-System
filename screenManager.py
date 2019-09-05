@@ -34,7 +34,7 @@ def clear_surface():
 
 # Creates the surface
 def configure_event_cb(wid, evt):
-    global surface,width,height
+    global surface
     if surface is not None:
         del surface
         surface = None
@@ -46,17 +46,13 @@ def configure_event_cb(wid, evt):
         width,
         height)
     clear_surface()
-    pass
+    return True
 
 # Redraw the screen from the surface
 def draw_cb(wid, cr):
     global surface
     cr.set_source_surface(surface, 0, 0)
     cr.paint()
-    cr.move_to(0, height/2)
-    cr.line_to(width, height/2)
-    cr.move_to(width/2, 0)
-    cr.line_to(width/2, height)
     return False
 
 class Handler:
