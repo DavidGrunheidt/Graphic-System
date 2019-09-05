@@ -4,9 +4,10 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+surface = None
+
 def cgi_init():
-    global gtkBuilder, window_widget, drawing_area, surface
-    surface = None
+    global gtkBuilder, window_widget, drawing_area
 
     gtkBuilder = Gtk.Builder()
     gtkBuilder.add_from_file('window.glade')
