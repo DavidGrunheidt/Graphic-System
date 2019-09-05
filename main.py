@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+    #!/usr/bin/env python
 
 import objectManager
 import cairo
@@ -6,9 +6,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-
 surface = None
-
 
 # Clear the surface, removing the scribbles
 def clear_surface():
