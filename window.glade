@@ -53,7 +53,7 @@
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="orientation">vertical</property>
-                    <property name="position">122</property>
+                    <property name="position">125</property>
                     <child>
                       <object class="GtkPaned" id="paned_new_object">
                         <property name="visible">True</property>
@@ -72,9 +72,12 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="button_new_object">
+                          <object class="GtkButton" id="button_new_object">
+                            <property name="label" translatable="yes">Novo objeto</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="btn_newObj_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="resize">True</property>
@@ -506,18 +509,6 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label_escala1">
-                        <property name="width_request">0</property>
-                        <property name="height_request">0</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Coordenadas objeto selecionado:</property>
-                      </object>
-                      <packing>
-                        <property name="y">47</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkLabel" id="label_num_coordenadas_cursor">
                         <property name="width_request">0</property>
                         <property name="height_request">0</property>
@@ -540,6 +531,18 @@
                       </object>
                       <packing>
                         <property name="x">229</property>
+                        <property name="y">47</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkLabel" id="label_escala1">
+                        <property name="width_request">0</property>
+                        <property name="height_request">0</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Coordenadas objeto selecionado:</property>
+                      </object>
+                      <packing>
                         <property name="y">47</property>
                       </packing>
                     </child>
