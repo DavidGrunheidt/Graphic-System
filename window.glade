@@ -2,9 +2,16 @@
 <!-- Generated with glade 3.22.1 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkToggleButton" id="generic_object_button">
+    <property name="visible">True</property>
+    <property name="can_focus">True</property>
+    <property name="receives_default">True</property>
+    <signal name="toggled" handler="object_toggled" swapped="no"/>
+  </object>
   <object class="GtkWindow" id="main_window">
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Computaçao Gráfica</property>
+    <property name="resizable">False</property>
     <property name="default_width">640</property>
     <property name="default_height">480</property>
     <child>
@@ -72,19 +79,12 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxText" id="button_new_object">
+                          <object class="GtkButton" id="button_new_object">
+                            <property name="label" translatable="yes">Novo objeto</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="active">0</property>
-                            <property name="button_sensitivity">on</property>
-                            <property name="active_id">0</property>
-                            <items>
-                              <item id="0" translatable="yes">Novo objeto</item>
-                              <item id="1" translatable="yes">Novo ponto</item>
-                              <item id="2" translatable="yes">Nova linha</item>
-                              <item id="3" translatable="yes">Novo wireframe</item>
-                            </items>
-                            <signal name="changed" handler="btn_newObj_clicked" swapped="no"/>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                            <signal name="clicked" handler="new_obj_clicked" swapped="no"/>
                           </object>
                           <packing>
                             <property name="resize">True</property>
@@ -132,7 +132,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_moveUp_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="window_moveUp_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">100</property>
@@ -147,7 +147,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_moveDown_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="window_moveDown_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">96</property>
@@ -162,7 +162,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_moveLeft_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="window_moveLeft_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">78</property>
@@ -177,7 +177,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_moveRight_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="window_moveRight_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">119</property>
@@ -205,7 +205,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_zoomIn_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="window_zoomIn_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">5</property>
@@ -220,7 +220,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="btn_zoomOut_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="window_zoomOut_clicked" swapped="no"/>
                                   </object>
                                   <packing>
                                     <property name="x">34</property>
@@ -431,7 +431,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="orientation">vertical</property>
-                <property name="position">377</property>
+                <property name="position">395</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolled_viewport1">
                     <property name="visible">True</property>
@@ -501,56 +501,6 @@
                       <packing>
                         <property name="x">51</property>
                         <property name="y">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_coordenadas">
-                        <property name="width_request">0</property>
-                        <property name="height_request">0</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Coordenadas cursor:</property>
-                      </object>
-                      <packing>
-                        <property name="y">26</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_num_coordenadas_cursor">
-                        <property name="width_request">0</property>
-                        <property name="height_request">0</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">X: 0; Y: 0; Z: 0</property>
-                      </object>
-                      <packing>
-                        <property name="x">144</property>
-                        <property name="y">26</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_num_coordenadas_selecionado">
-                        <property name="width_request">0</property>
-                        <property name="height_request">0</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">X: 0; Y: 0; Z: 0</property>
-                      </object>
-                      <packing>
-                        <property name="x">229</property>
-                        <property name="y">47</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_escala1">
-                        <property name="width_request">0</property>
-                        <property name="height_request">0</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Coordenadas objeto selecionado:</property>
-                      </object>
-                      <packing>
-                        <property name="y">47</property>
                       </packing>
                     </child>
                   </object>
