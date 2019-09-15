@@ -60,31 +60,40 @@ def viewport_transform(coordinates):
 	for triple in coordinates:
 		coordinates_on_viewport.append([])
 
-		xw = triple[0]
-		yw = triple[1]
+		# xw = triple[0]
+		xVp = ((triple[0] - window["xWinMin"]) / window["xDif"]) * viewport["xDif"]
 
-		xVp = ((xw - window["xWinMin"]) / window["xDif"]) * viewport["xDif"]
-
-		yVp = (1 - ((yw - window["yWinMin"]) / window["yDif"])) * viewport["yDif"]
+		# yw = triple[1]
+		yVp = (1 - ((triple[1] - window["yWinMin"]) / window["yDif"])) * viewport["yDif"]
 
 		coordinates_on_viewport[index_row].append(xVp)
 		coordinates_on_viewport[index_row].append(yVp)
 
 		index_row += 1
 
-	#For debug purpose
-	print("Coordenadas do objeto na viewport = "+str(coordinates_on_viewport)+"\n")
-
 	return coordinates_on_viewport
 
-def set_window(xWinMin: float, yWinMin: float, xWinMax: float, yWinMax: float) -> None:
+def move_window(direction: 'String -> Must be one of this options: left, right, up or down') -> None:
+	step = 10
+	# The if is testing for "up" instead of, intuitively test for down, because the "y" axis is inverted on the viewport
+	if (direction == "up" or direction == "left"): 
+		step = step * -1
+
+	if (direction == "down" or direction == "up"):
+		window["yWinMin"] += step
+		window["yWinMax"] += step
+	else:
+		window["xWinMin"] += step
+		window["xWinMax"] += step
+
+def set_window_original_size():
 	global window
-	window["xWinMin"] = xWinMin
-	window["yWinMin"] = yWinMin
-	window["xWinMax"] = xWinMax
-	window["yWinMax"] = yWinMax
-	window["xDif"] = xWinMax - xWinMin
-	window["yDif"] = yWinMax - yWinMin
+	window["xWinMin"] = viewport["xVpMin"]
+	window["yWinMin"] = viewport["yVpMin"]
+	window["xWinMax"] = viewport["xVpMax"]
+	window["yWinMax"] = viewport["yVpMax"]
+	window["xDif"] = viewport["xDif"]
+	window["yDif"] = viewport["yDif"]
 
 
 def set_viewport(xVpMin: float, yVpMin: float, xVpMax: float, yVpMax: float) -> None:
@@ -102,6 +111,8 @@ def get_window() -> (float, float, float, float):
 def get_viewport() -> (float, float, float, float):
 	return viewport
 
+def get_display_file() -> list:
+	return [x.coordinates for x in list(display_file.values())]
 
 
 

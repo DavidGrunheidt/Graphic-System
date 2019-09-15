@@ -26,19 +26,13 @@ def cgi_init() -> None:
     window_widget.show_all()
     Gtk.main()
 
-def show_new_object(obj: Object) -> None:
-    global gtkBuilder, object_list, surface
-
-    listed_object = gtkBuilder.get_object('generic_object_button').new_with_label(obj.name+" ("+obj.type+")")
-    object_list.insert(listed_object, -1)
-    object_list.show_all()
-
-    coordinates_on_viewport = viewport_transform(obj.coordinates)
+def drawn_object(coordinates: list, isPoint: bool) -> None:
+    coordinates_on_viewport = viewport_transform(coordinates)
 
     cr = cairo.Context(surface)
     cr.move_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
 
-    if (obj.isPoint):
+    if (isPoint):
         cr.line_to(coordinates_on_viewport[0][0]+1, coordinates_on_viewport[0][1]+1)
     else:
         index_row = 0
@@ -51,6 +45,11 @@ def show_new_object(obj: Object) -> None:
     cr.stroke()
     window_widget.queue_draw()
 
+def screen_move_window(direction: 'String -> Must be one of this options: left, right, up or down') -> None:
+    move_window(direction)
+    clear_surface()
+    for coordinates in get_display_file():
+        drawn_object(coordinates, len(coordinates) == 1)
 
 # Clear the surface, removing the scribbles
 def clear_surface() -> None:
@@ -59,6 +58,8 @@ def clear_surface() -> None:
     cr.set_source_rgb(1, 1, 1)
     cr.paint()
     del cr
+    #Forces surface to update
+    window_widget.queue_draw()
 
 # Creates the surface
 def configure_event_cb(wid, evt) -> None:
@@ -76,8 +77,8 @@ def configure_event_cb(wid, evt) -> None:
         width,
         height)
 
-    set_window(0, 0, width, height)
     set_viewport(0, 0, width, height)
+    set_window_original_size()
 
     clear_surface()
 
@@ -133,16 +134,16 @@ class Handler:
         pass
 
     def window_moveUp_clicked(self,btn):
-        pass
+        screen_move_window("up")
 
     def window_moveDown_clicked(self,btn):
-        pass
+        screen_move_window("down")
 
     def window_moveRight_clicked(self,btn):
-        pass
+        screen_move_window("left")
 
     def window_moveLeft_clicked(self,btn):
-        pass 
+        screen_move_window("right")
 
     def cofirm_new_obj(self, btn) -> None:
         global dialog_newObj, gtkBuilder
@@ -161,7 +162,9 @@ class Handler:
                 show_error(str(e))
                 return
 
-            show_new_object(newObj)
+            object_list.append_text(newObj.name+" ("+newObj.type+")")
+            object_list.show_all()
+            drawn_object(newObj.coordinates, newObj.isPoint)
 
             dialog_newObj.hide()
 
