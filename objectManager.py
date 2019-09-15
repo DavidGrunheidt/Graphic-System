@@ -75,8 +75,9 @@ def viewport_transform(coordinates):
 
 def move_window(direction: 'String -> Must be one of this options: left, right, up or down') -> None:
 	step = 10
-	# The if is testing for "up" instead of, intuitively test for down, because the "y" axis is inverted on the viewport
-	if (direction == "up" or direction == "left"): 
+	# The if is testing for "down" instead of, intuitively test for "up", because the "y" axis is inverted on the viewport
+	# also, we want to move the objects to the inverse of where the window is moving (Window go down -> objects go up)
+	if (direction == "down" or direction == "right"): 
 		step = step * -1
 
 	if (direction == "down" or direction == "up"):
