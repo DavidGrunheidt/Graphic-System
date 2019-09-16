@@ -131,7 +131,7 @@
                                     <signal name="clicked" handler="window_moveUp_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">100</property>
+                                    <property name="x">105</property>
                                     <property name="y">3</property>
                                   </packing>
                                 </child>
@@ -146,7 +146,7 @@
                                     <signal name="clicked" handler="window_moveDown_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">96</property>
+                                    <property name="x">101</property>
                                     <property name="y">59</property>
                                   </packing>
                                 </child>
@@ -161,7 +161,7 @@
                                     <signal name="clicked" handler="window_moveLeft_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">78</property>
+                                    <property name="x">83</property>
                                     <property name="y">31</property>
                                   </packing>
                                 </child>
@@ -176,7 +176,7 @@
                                     <signal name="clicked" handler="window_moveRight_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">119</property>
+                                    <property name="x">123</property>
                                     <property name="y">31</property>
                                   </packing>
                                 </child>
@@ -189,7 +189,7 @@
                                     <property name="label" translatable="yes">Zoom:</property>
                                   </object>
                                   <packing>
-                                    <property name="x">14</property>
+                                    <property name="x">24</property>
                                     <property name="y">1</property>
                                   </packing>
                                 </child>
@@ -204,7 +204,7 @@
                                     <signal name="clicked" handler="window_zoomIn_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">5</property>
+                                    <property name="x">15</property>
                                     <property name="y">17</property>
                                   </packing>
                                 </child>
@@ -219,35 +219,21 @@
                                     <signal name="clicked" handler="window_zoomOut_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">34</property>
+                                    <property name="x">44</property>
                                     <property name="y">17</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label_passo">
-                                    <property name="width_request">0</property>
-                                    <property name="height_request">0</property>
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Passo (%):</property>
-                                  </object>
-                                  <packing>
-                                    <property name="x">5</property>
-                                    <property name="y">46</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkEntry" id="passo_entry">
-                                    <property name="width_request">0</property>
-                                    <property name="height_request">0</property>
+                                  <object class="GtkButton" id="button_set_window">
+                                    <property name="label" translatable="yes">Set window</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="width_chars">3</property>
-                                    <property name="max_width_chars">3</property>
+                                    <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="set_window_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">13</property>
-                                    <property name="y">62</property>
+                                    <property name="x">1</property>
+                                    <property name="y">63</property>
                                   </packing>
                                 </child>
                               </object>

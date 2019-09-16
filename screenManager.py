@@ -45,8 +45,7 @@ def drawn_object(coordinates: list, isPoint: bool) -> None:
     cr.stroke()
     window_widget.queue_draw()
 
-def screen_move_window(direction: 'String -> Must be one of this options: left, right, up or down') -> None:
-    move_window(direction)
+def redraw_all_objects() -> None:
     clear_surface()
     for coordinates in get_display_file():
         drawn_object(coordinates, len(coordinates) == 1)
@@ -86,16 +85,15 @@ def configure_event_cb(wid, evt) -> None:
 
 # Redraw the screen from the surface
 def draw_cb(wid, cr) -> None:
-    global surface
     cr.set_source_surface(surface, 0, 0)
     cr.paint()
     return False
 
-def show_error(message: str) -> None:
+def show_error(message: str, transient_wid) -> None:
     gtkBuilder.add_from_file('showError.glade')
 
     errorWindow = gtkBuilder.get_object('window_show_error')
-    errorWindow.set_transient_for(dialog_newObj)
+    errorWindow.set_transient_for(transient_wid)
     errorWindow.set_modal(True)
 
     errorLabel = gtkBuilder.get_object('label_error')
@@ -106,7 +104,7 @@ def show_error(message: str) -> None:
 class Handler:
     # Function that will be called when the ok button is pressed
     def new_obj_clicked(self, widget) -> None:
-        global dialog_newObj, gtkBuilder
+        global dialog_newObj
 
         gtkBuilder.add_from_file('dialogNewObj.glade')
 
@@ -117,63 +115,100 @@ class Handler:
         gtkBuilder.connect_signals(Handler())
 
         dialog_newObj.show_all()
-    
-    def btn_rotateX_toggled(self,btn):
-        pass
-
-    def btn_rotateY_toggled(self,btn):
-        pass
-
-    def btn_rotateZ_toggled(self,btn):
-        pass
-
-    def window_zoomIn_clicked(self,btn):
-        pass
-        
-    def window_zoomOut_clicked(self,btn):
-        pass
-
-    def window_moveUp_clicked(self,btn):
-        screen_move_window("up")
-
-    def window_moveDown_clicked(self,btn):
-        screen_move_window("down")
-
-    def window_moveRight_clicked(self,btn):
-        screen_move_window("left")
-
-    def window_moveLeft_clicked(self,btn):
-        screen_move_window("right")
 
     def cofirm_new_obj(self, btn) -> None:
-        global dialog_newObj, gtkBuilder
-
         newObj_coordinates_raw = gtkBuilder.get_object('object_coordinates_entry').get_text()
         newObj_name = gtkBuilder.get_object('newObj_name_entry').get_text()
 
         if (newObj_name in display_file):
-            show_error("Nome já definido, escolha outro nome.")
+            show_error("Nome já definido, escolha outro nome.", dialog_newObj)
         else:
             newObj = None
 
             try: 
                 newObj = create_new_object(newObj_name, newObj_coordinates_raw)
             except ValueError as e:
-                show_error(str(e))
+                show_error(str(e), dialog_newObj)
                 return
 
             object_list.append_text(newObj.name+" ("+newObj.type+")")
             object_list.show_all()
             drawn_object(newObj.coordinates, newObj.isPoint)
 
-            dialog_newObj.hide()
+            dialog_newObj.destroy()
 
 
     def cancel_new_obj(self, btn) -> None:
-        global dialog_new_obj
-        dialog_newObj.hide()
+        dialog_newObj.destroy()
+    
+    def btn_rotateX_toggled(self,btn) -> None:
+        pass
 
-    def object_toggled(self, btn):
+    def btn_rotateY_toggled(self,btn) -> None:
+        pass
+
+    def btn_rotateZ_toggled(self,btn) -> None:
+        pass
+
+    def window_zoomIn_clicked(self,btn) -> None:
+        zoom_window("in")
+        redraw_all_objects()
+        
+    def window_zoomOut_clicked(self,btn) -> None:
+        zoom_window("out")
+        redraw_all_objects()
+        
+    def window_moveUp_clicked(self,btn) -> None:
+        move_window("up")
+        redraw_all_objects()
+
+    def window_moveDown_clicked(self,btn) -> None:
+        move_window("down")
+        redraw_all_objects()
+
+    def window_moveRight_clicked(self,btn) -> None:
+        move_window("left")
+        redraw_all_objects()
+
+    def window_moveLeft_clicked(self,btn) -> None:
+        move_window("right")
+        redraw_all_objects()
+
+
+    def set_window_clicked(self, btn) -> None:
+        global dialog_setWindow
+
+        gtkBuilder.add_from_file('setWindowDialog.glade')
+
+        dialog_setWindow = gtkBuilder.get_object('dialog_set_window')
+        dialog_setWindow.set_transient_for(window_widget)
+        dialog_setWindow.set_modal(True)
+
+        gtkBuilder.connect_signals(Handler())
+
+        dialog_setWindow.show_all()
+
+    def confirm_set_window(self, btn) -> None:
+        window_coordinates_raw = gtkBuilder.get_object('window_coordinates_entry').get_text()
+
+        coordinates_list = window_coordinates_raw.split(',')
+
+        if (len(coordinates_list) != 4):
+            show_error("Insira todos os valores pedidos!", dialog_setWindow)
+        else:
+            try:
+                set_window(float(coordinates_list[0]), float(coordinates_list[1]), float(coordinates_list[2]), float(coordinates_list[3]))
+            except ValueError:
+                show_error("Coordenadas devem ser todas do tipo float", dialog_setWindow)
+                return 
+
+            redraw_all_objects()
+            dialog_setWindow.destroy()
+
+    def cancel_set_window(self, btn) -> None:
+        dialog_setWindow.destroy()
+
+    def object_toggled(self, btn) -> None:
         pass
 
 
