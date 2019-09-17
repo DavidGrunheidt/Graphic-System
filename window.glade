@@ -307,6 +307,7 @@ sobre este objeto:</property>
                                             <property name="can_focus">True</property>
                                             <property name="width_chars">3</property>
                                             <property name="max_width_chars">3</property>
+                                            <property name="placeholder_text" translatable="yes">%</property>
                                           </object>
                                           <packing>
                                             <property name="x">49</property>
@@ -380,6 +381,7 @@ sobre este objeto:</property>
                                       <object class="GtkEntry" id="entry_object_move">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="placeholder_text" translatable="yes">Dx,Dy</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>
@@ -388,7 +390,7 @@ sobre este objeto:</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkToggleButton" id="toggle_object_zoom">
+                                      <object class="GtkToggleButton" id="toggle_object_scale">
                                         <property name="label" translatable="yes">Escalonar</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
@@ -405,6 +407,7 @@ sobre este objeto:</property>
                                       <object class="GtkEntry" id="entry_object_zoom">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
+                                        <property name="placeholder_text" translatable="yes">Sx,Sy</property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>

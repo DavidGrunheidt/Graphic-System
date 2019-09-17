@@ -219,7 +219,7 @@ class Handler:
 
         gtkBuilder.get_object('toggle_object_rotate').set_active(False) 
         gtkBuilder.get_object('toggle_object_move').set_active(False) 
-        gtkBuilder.get_object('toggle_object_zoom').set_active(False) 
+        gtkBuilder.get_object('toggle_object_scale').set_active(False) 
 
         if object_list.get_active() == 0:
             object_selected = None
@@ -237,15 +237,21 @@ class Handler:
 
     def toggle_object_scale(self, btn) -> None:
         global objScale
-        objScale = True
+        objScale = False
+        if (gtkBuilder.get_object('toggle_object_scale').get_active()):
+            objScale = True
 
     def toggle_object_move(self, btn) -> None:
         global objMove
-        objMove = True
+        objMove = False
+        if (gtkBuilder.get_object('toggle_object_move').get_active()):
+            objMove = True
 
     def toggle_object_rotate(self, btn) -> None:
         global objRotate
-        objRotate = True
+        objRotate = False
+        if (gtkBuilder.get_object('toggle_object_rotate').get_active()):
+            objRotate = True
 
     def close_dialog(self, btn) -> None:
         dialog.destroy()
