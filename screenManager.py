@@ -4,10 +4,13 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from objectManager import *
 
-surface = None
+zoom_scale = 0.05
+move_step = 10
 
 def cgi_init() -> None:
-    global gtkBuilder, window_widget, drawing_area, surface, object_list
+    global gtkBuilder, window_widget, drawing_area, surface, object_list, scale
+
+    surface = None
 
     gtkBuilder = Gtk.Builder()
     gtkBuilder.add_from_file('window.glade')
@@ -20,6 +23,8 @@ def cgi_init() -> None:
     drawing_area.connect('configure-event', configure_event_cb)
 
     object_list = gtkBuilder.get_object('list_objects')
+
+    scale = gtkBuilder.get_object('label_porcentagem')
 
     gtkBuilder.connect_signals(Handler())
 
@@ -52,7 +57,6 @@ def redraw_all_objects() -> None:
 
 # Clear the surface, removing the scribbles
 def clear_surface() -> None:
-    global surface
     cr = cairo.Context(surface)
     cr.set_source_rgb(1, 1, 1)
     cr.paint()
@@ -151,27 +155,29 @@ class Handler:
         pass
 
     def window_zoomIn_clicked(self,btn) -> None:
-        zoom_window("in")
+        scale.set_text(str(float(scale.get_text().replace('%', '')) + (zoom_scale * 100))+'%')
+        zoom_window(zoom_scale, "in")
         redraw_all_objects()
         
     def window_zoomOut_clicked(self,btn) -> None:
-        zoom_window("out")
+        scale.set_text(str(float(scale.get_text().replace('%', '')) - (zoom_scale * 100))+'%')
+        zoom_window(zoom_scale, "out")
         redraw_all_objects()
         
     def window_moveUp_clicked(self,btn) -> None:
-        move_window("up")
+        move_window(move_step, "up")
         redraw_all_objects()
 
     def window_moveDown_clicked(self,btn) -> None:
-        move_window("down")
+        move_window(move_step, "down")
         redraw_all_objects()
 
     def window_moveRight_clicked(self,btn) -> None:
-        move_window("left")
+        move_window(move_step, "left")
         redraw_all_objects()
 
     def window_moveLeft_clicked(self,btn) -> None:
-        move_window("right")
+        move_window(move_step, "right")
         redraw_all_objects()
 
 
@@ -208,7 +214,13 @@ class Handler:
     def cancel_set_window(self, btn) -> None:
         dialog_setWindow.destroy()
 
-    def object_toggled(self, btn) -> None:
-        pass
+    def object_selected(self, user_data) -> None:
+        if object_list.get_active() == 0:
+            return
+
+        object_selected = object_list.get_active_text()
+        # Returns the combo box to default, with no selected text
+        object_list.set_active(0)
+
 
 

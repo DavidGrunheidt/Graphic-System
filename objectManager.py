@@ -73,28 +73,28 @@ def viewport_transform(coordinates):
 
 	return coordinates_on_viewport
 
-def zoom_window(zoom_type: 'String -> Must be one of this options: in, out') -> None:
-	step_x = 0.02 * window["xDif"]
-	step_y = 0.02 * window["yDif"] 
+def zoom_window(scale: float, zoom_type: 'String -> Must be one of this options: in, out') -> None:
+	step_x = scale * window["xDif"]
+	step_y = scale * window["yDif"] 
 	if (zoom_type == "out"):
 		step_x = step_x * -1
 		step_y = step_y * -1
 
 	set_window(window["xWinMin"] + step_x, window["yWinMin"] + step_y, window["xWinMax"] - step_x, window["yWinMax"] - step_y)
 
-def move_window(direction: 'String -> Must be one of this options: left, right, up or down') -> None:
-	step = 10
+def move_window(step: float, direction: 'String -> Must be one of this options: left, right, up or down') -> None:
+	stepAux = step
 	# The if is testing for "down" instead of, intuitively test for "up", because the "y" axis is inverted on the viewport
 	# also, we want to move the objects to the inverse of where the window is moving (Window go down -> objects go up)
 	if (direction == "down" or direction == "right"): 
-		step = -10
+		stepAux *= -1
 
 	if (direction == "down" or direction == "up"):
-		window["yWinMin"] += step
-		window["yWinMax"] += step
+		window["yWinMin"] += stepAux
+		window["yWinMax"] += stepAux
 	else:
-		window["xWinMin"] += step
-		window["xWinMax"] += step
+		window["xWinMin"] += stepAux
+		window["xWinMax"] += stepAux
 
 def set_window_original_size():
 	global window
