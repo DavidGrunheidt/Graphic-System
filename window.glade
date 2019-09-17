@@ -393,7 +393,7 @@ sobre este objeto:</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">True</property>
-                                        <signal name="toggled" handler="toggle_object_zoom" swapped="no"/>
+                                        <signal name="toggled" handler="toggle_object_scale" swapped="no"/>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>

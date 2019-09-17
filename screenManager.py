@@ -211,7 +211,15 @@ class Handler:
         dialog.destroy()
 
     def set_object_selected(self, user_data) -> None:
-        global object_selected 
+        global object_selected, objScale, objMove, objRotate
+
+        objScale = False
+        objMove = False
+        objRotate = False
+
+        gtkBuilder.get_object('toggle_object_rotate').set_active(False) 
+        gtkBuilder.get_object('toggle_object_move').set_active(False) 
+        gtkBuilder.get_object('toggle_object_zoom').set_active(False) 
 
         if object_list.get_active() == 0:
             object_selected = None
@@ -222,20 +230,25 @@ class Handler:
 
         change_obj_options.show_all()
 
-    def close_dialog(self, btn) -> None:
-        dialog.destroy()
-
     def obj_change_clicked(self, btn) -> None:
-        pass
+        print(objScale)
+        print(objMove)
+        print(objRotate)
 
-    def toggle_object_zoom(self, btn) -> None:
-        pass
+    def toggle_object_scale(self, btn) -> None:
+        global objScale
+        objScale = True
 
     def toggle_object_move(self, btn) -> None:
-        pass
+        global objMove
+        objMove = True
 
     def toggle_object_rotate(self, btn) -> None:
-        pass
+        global objRotate
+        objRotate = True
+
+    def close_dialog(self, btn) -> None:
+        dialog.destroy()
 
 
 
