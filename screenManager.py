@@ -4,16 +4,18 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from objectManager import *
 
+surface = None
+
 zoom_scale = 0.05
 move_step = 10
 
 def cgi_init() -> None:
-    global gtkBuilder, window_widget, drawing_area, surface, object_list, scale
-
-    surface = None
+    global gtkBuilder, window_widget, drawing_area, object_list, scale, change_obj_options
 
     gtkBuilder = Gtk.Builder()
     gtkBuilder.add_from_file('window.glade')
+
+    change_obj_options = gtkBuilder.get_object('paned_label_change_object')
 
     window_widget = gtkBuilder.get_object('main_window')
     window_widget.connect('destroy', Gtk.main_quit)
@@ -26,9 +28,14 @@ def cgi_init() -> None:
 
     scale = gtkBuilder.get_object('label_porcentagem')
 
+
     gtkBuilder.connect_signals(Handler())
 
     window_widget.show_all()
+
+    # Hides object change options (only showed when an object is selected)
+    change_obj_options.hide()
+
     Gtk.main()
 
 def drawn_object(coordinates: list, isPoint: bool) -> None:
@@ -105,45 +112,44 @@ def show_error(message: str, transient_wid) -> None:
 
     errorWindow.show_all()
 
+def show_dialog(file_name: str, window_id) -> None:
+    global dialog
+
+    gtkBuilder.add_from_file(file_name)
+
+    dialog = gtkBuilder.get_object(window_id)
+    dialog.set_transient_for(window_widget)
+    dialog.set_modal(True)
+
+    gtkBuilder.connect_signals(Handler())
+
+    dialog.show_all()
+
 class Handler:
     # Function that will be called when the ok button is pressed
     def new_obj_clicked(self, widget) -> None:
-        global dialog_newObj
-
-        gtkBuilder.add_from_file('dialogNewObj.glade')
-
-        dialog_newObj = gtkBuilder.get_object('dialog_new_obj')
-        dialog_newObj.set_transient_for(window_widget)
-        dialog_newObj.set_modal(True)
-
-        gtkBuilder.connect_signals(Handler())
-
-        dialog_newObj.show_all()
+        show_dialog('dialogNewObj.glade', 'dialog_new_obj')
 
     def cofirm_new_obj(self, btn) -> None:
         newObj_coordinates_raw = gtkBuilder.get_object('object_coordinates_entry').get_text()
         newObj_name = gtkBuilder.get_object('newObj_name_entry').get_text()
 
         if (newObj_name in display_file):
-            show_error("Nome já definido, escolha outro nome.", dialog_newObj)
+            show_error("Nome já definido, escolha outro nome.", dialog)
         else:
             newObj = None
 
             try: 
                 newObj = create_new_object(newObj_name, newObj_coordinates_raw)
             except ValueError as e:
-                show_error(str(e), dialog_newObj)
-                return
+                return show_error(str(e), dialog)
+                
 
             object_list.append_text(newObj.name+" ("+newObj.type+")")
             object_list.show_all()
             drawn_object(newObj.coordinates, newObj.isPoint)
 
-            dialog_newObj.destroy()
-
-
-    def cancel_new_obj(self, btn) -> None:
-        dialog_newObj.destroy()
+            dialog.destroy()
     
     def btn_rotateX_toggled(self,btn) -> None:
         pass
@@ -182,45 +188,54 @@ class Handler:
 
 
     def set_window_clicked(self, btn) -> None:
-        global dialog_setWindow
-
-        gtkBuilder.add_from_file('setWindowDialog.glade')
-
-        dialog_setWindow = gtkBuilder.get_object('dialog_set_window')
-        dialog_setWindow.set_transient_for(window_widget)
-        dialog_setWindow.set_modal(True)
-
-        gtkBuilder.connect_signals(Handler())
-
-        dialog_setWindow.show_all()
+        show_dialog('setWindowDialog.glade', 'dialog_set_window')
 
     def confirm_set_window(self, btn) -> None:
         window_coordinates_raw = gtkBuilder.get_object('window_coordinates_entry').get_text()
 
-        coordinates_list = window_coordinates_raw.split(',')
-
-        if (len(coordinates_list) != 4):
-            show_error("Insira todos os valores pedidos!", dialog_setWindow)
+        if (window_coordinates_raw == "original"):
+            set_window_original_size()
         else:
-            try:
-                set_window(float(coordinates_list[0]), float(coordinates_list[1]), float(coordinates_list[2]), float(coordinates_list[3]))
-            except ValueError:
-                show_error("Coordenadas devem ser todas do tipo float", dialog_setWindow)
-                return 
+            coordinates_list = window_coordinates_raw.split(',')
 
-            redraw_all_objects()
-            dialog_setWindow.destroy()
+            if (len(coordinates_list) != 4):
+                return show_error("Insira todos os valores pedidos!", dialog)
+            else:
+                try:
+                    set_window(float(coordinates_list[0]), float(coordinates_list[1]), float(coordinates_list[2]), float(coordinates_list[3]))
+                except ValueError:
+                    return show_error("Coordenadas devem ser todas do tipo float", dialog)
+                    
 
-    def cancel_set_window(self, btn) -> None:
-        dialog_setWindow.destroy()
+        redraw_all_objects()
+        dialog.destroy()
 
-    def object_selected(self, user_data) -> None:
+    def set_object_selected(self, user_data) -> None:
+        global object_selected 
+
         if object_list.get_active() == 0:
+            object_selected = None
+            change_obj_options.hide()
             return
 
         object_selected = object_list.get_active_text()
-        # Returns the combo box to default, with no selected text
-        object_list.set_active(0)
+
+        change_obj_options.show_all()
+
+    def close_dialog(self, btn) -> None:
+        dialog.destroy()
+
+    def obj_change_clicked(self, btn) -> None:
+        pass
+
+    def toggle_object_zoom(self, btn) -> None:
+        pass
+
+    def toggle_object_move(self, btn) -> None:
+        pass
+
+    def toggle_object_rotate(self, btn) -> None:
+        pass
 
 
 

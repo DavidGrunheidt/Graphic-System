@@ -5,7 +5,7 @@
   <object class="GtkDialog" id="dialog_set_window">
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
-    <signal name="close" handler="cancel_new_obj" swapped="no"/>
+    <signal name="close" handler="close_dialog" swapped="no"/>
     <child>
       <placeholder/>
     </child>
@@ -37,7 +37,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
-                <signal name="clicked" handler="cancel_set_window" swapped="no"/>
+                <signal name="clicked" handler="close_dialog" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">True</property>
@@ -57,7 +57,9 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Insira as coordenadas da window da seguinte maneira:
-xWinMin, yWinMin, xWinMax, yWinMax</property>
+xWinMin, yWinMin, xWinMax, yWinMax
+OU
+"original" para voltar ao tamanho original</property>
             <property name="justify">center</property>
           </object>
           <packing>
