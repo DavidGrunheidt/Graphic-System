@@ -166,6 +166,9 @@ class Handler:
         redraw_all_objects()
         
     def window_zoomOut_clicked(self,btn) -> None:
+        if (float(scale.get_text().replace('%', '')) <= 40):
+            return show_error("Escala não pode ser menor que 40%", window_widget)
+
         scale.set_text(str(float(scale.get_text().replace('%', '')) - (zoom_scale * 100))+'%')
         zoom_window(zoom_scale, "out")
         redraw_all_objects()
@@ -217,23 +220,59 @@ class Handler:
         objMove = False
         objRotate = False
 
-        gtkBuilder.get_object('toggle_object_rotate').set_active(False) 
-        gtkBuilder.get_object('toggle_object_move').set_active(False) 
+        gtkBuilder.get_object('toggle_object_rotate').set_active(False)
+        gtkBuilder.get_object('object_rotate_rate_entry').set_text("")
+        gtkBuilder.get_object('button_x').set_active(False)
+        gtkBuilder.get_object('button_y').set_active(False)
+        gtkBuilder.get_object('button_z').set_active(False)
+        gtkBuilder.get_object('toggle_object_move').set_active(False)
+        gtkBuilder.get_object('object_move_entry').set_text("")
         gtkBuilder.get_object('toggle_object_scale').set_active(False) 
+        gtkBuilder.get_object('object_zoom_entry').set_text("")
 
         if object_list.get_active() == 0:
             object_selected = None
             change_obj_options.hide()
             return
 
-        object_selected = object_list.get_active_text()
+        object_selected = object_list.get_active_text().replace("(Ponto)", "").replace("(Linha)", "").replace("(Wireframe)", "").replace(" ", "")
 
         change_obj_options.show_all()
 
     def obj_change_clicked(self, btn) -> None:
-        print(objScale)
-        print(objMove)
-        print(objRotate)
+        move_vector = None
+        scale_factors = None
+        rotate_rate = None
+
+        if (objMove):
+            try:
+                move_vector = [float(x) for x in gtkBuilder.get_object('object_move_entry').get_text().split(',')]
+                if (len(move_vector) != 2):
+                    return show_error("Forneça um vetor valido (Dx, Dy)", window_widget)
+            except ValueError:
+                return show_error("Valores Dx, Dy do vetor de translação devem ser todos floats", window_widget)
+
+        if (objScale):
+            try:
+                scale_factors = [float(x) for x in gtkBuilder.get_object('object_zoom_entry').get_text().split(',')]
+                if(len(scale_factors) != 2):
+                    return show_error("Forneça fatores de escalonamento validos (Sx, Sy)", window_widget)
+                else:
+                    for x in scale_factors:
+                        if (x <= 0):
+                            return show_error("Fator de escalonamento deve ser maior que 0 \n (menor que 1 diminui, maior que 1 aumenta)", window_widget)
+            except ValueError:
+                return show_error("Fatores Sx, Sy de escalonamento devem ser todos floats", window_widget)
+
+        if (objRotate):
+            try:
+                rotate_rate = float(gtkBuilder.get_object('object_rotate_rate_entry').get_text())
+            except ValueError:
+                return show_error("Angulo de rotação deve ser float", window_widget)
+
+        change_object(object_selected, move_vector, scale_factors, rotate_rate)
+        redraw_all_objects()
+
 
     def toggle_object_scale(self, btn) -> None:
         global objScale

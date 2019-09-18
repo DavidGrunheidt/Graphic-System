@@ -113,7 +113,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkPaned" id="paned_rotacao">
+                          <object class="GtkPaned" id="paned_windo">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="orientation">vertical</property>
@@ -300,14 +300,14 @@ sobre este objeto:</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkEntry" id="entry_rate_object_rotate">
+                                          <object class="GtkEntry" id="object_rotate_rate_entry">
                                             <property name="width_request">0</property>
                                             <property name="height_request">0</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="width_chars">3</property>
                                             <property name="max_width_chars">3</property>
-                                            <property name="placeholder_text" translatable="yes">%</property>
+                                            <property name="placeholder_text" translatable="yes">°</property>
                                           </object>
                                           <packing>
                                             <property name="x">49</property>
@@ -378,7 +378,7 @@ sobre este objeto:</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkEntry" id="entry_object_move">
+                                      <object class="GtkEntry" id="object_move_entry">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="placeholder_text" translatable="yes">Dx,Dy</property>
@@ -404,7 +404,7 @@ sobre este objeto:</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkEntry" id="entry_object_zoom">
+                                      <object class="GtkEntry" id="object_zoom_entry">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="placeholder_text" translatable="yes">Sx,Sy</property>

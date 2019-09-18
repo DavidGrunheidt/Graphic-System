@@ -6,4 +6,6 @@ class Object:
 		self.isLine = len(coordinates) == 2
 		self.isWireframe = len(coordinates) > 2
 		self.type = "Ponto" if self.isPoint else "Linha" if self.isLine else "Wireframe"
-		self.isSelected = False
+
+	def set_coordinates(self, new_coordinates: 'list[list[float]]') -> None:
+		self.coordinates = new_coordinates

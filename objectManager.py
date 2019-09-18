@@ -1,4 +1,6 @@
 from object import Object
+import numpy as np
+import math
 
 #2D Window and Viewport starts with 0 as all coordinates default values.
 window = {
@@ -39,7 +41,7 @@ def create_new_object(name: str, coordinates: 'string containing triples of x,y,
 				coordinates_matrix[index_row].append(coordinate)
 
 			if (len(coordinates) == 2):
-				coordinates_matrix[index_row].append(0)
+				coordinates_matrix[index_row].append(1)
 
 			index_row += 1
 		else:
@@ -53,6 +55,33 @@ def create_new_object(name: str, coordinates: 'string containing triples of x,y,
 
 	return newObject
 
+def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate: float) -> None:
+	move_matrix = np.array([])
+	scale_matrix = np.array([])
+	rotate_matrix = np.array([])
+	transformation_matrix = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+	# Obs: Matrix multiplication will be on the order Rotate Matrix * Move Matrix * Scale Matrix always.
+
+	if rotate_rate:
+		rotate_matrix = np.array([[math.cos(rotate_rate), -math.sin(rotate_rate), 0], [math.sin(rotate_rate), math.cos(rotate_rate), 0], [0, 0, 1]])
+		transformation_matrix = transformation_matrix.dot(rotate_matrix)
+
+	if move_vector:
+		move_matrix = np.array([[1, 0, 0], [0, 1, 0], [move_vector[0], move_vector[1], 1]])
+		transformation_matrix = transformation_matrix.dot(move_matrix)
+
+	if scale_factors:
+		scale_matrix = np.array([[scale_factors[0], 0, 0], [0, scale_factors[1], 0], [0, 0, 1]])
+		transformation_matrix = transformation_matrix.dot(scale_matrix)
+
+	coordinates = display_file[name].coordinates
+	new_coordinates = np.array(coordinates).dot(transformation_matrix).tolist()
+
+	display_file[name].set_coordinates(new_coordinates)
+
+	print(new_coordinates)
+	
 def viewport_transform(coordinates):
 	coordinates_on_viewport = []
 	index_row = 0
