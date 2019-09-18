@@ -214,17 +214,21 @@ class Handler:
         dialog.destroy()
 
     def set_object_selected(self, user_data) -> None:
-        global object_selected, objScale, objMove, objRotate
+        global object_selected, objScale, objMove, objRotate, rotateAroundWorldCenter, rotateAroundObjectCenter, rotateAroundPointCenter
 
         objScale = False
         objMove = False
         objRotate = False
+        rotateAroundWorldCenter = False
+        rotateAroundObjectCenter = False
+        rotateAroundPointCenter = False
 
         gtkBuilder.get_object('toggle_object_rotate').set_active(False)
         gtkBuilder.get_object('object_rotate_rate_entry').set_text("")
-        gtkBuilder.get_object('button_x').set_active(False)
-        gtkBuilder.get_object('button_y').set_active(False)
-        gtkBuilder.get_object('button_z').set_active(False)
+        gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
+        gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
+        gtkBuilder.get_object('button_rotate_around_point_center').set_active(False)
+        gtkBuilder.get_object('point_of_rotation_entry').set_text("")
         gtkBuilder.get_object('toggle_object_move').set_active(False)
         gtkBuilder.get_object('object_move_entry').set_text("")
         gtkBuilder.get_object('toggle_object_scale').set_active(False) 
@@ -238,6 +242,8 @@ class Handler:
         object_selected = object_list.get_active_text().replace("(Ponto)", "").replace("(Linha)", "").replace("(Wireframe)", "").replace(" ", "")
 
         change_obj_options.show_all()
+
+        self.toggle_object_rotate(None)
 
     def obj_change_clicked(self, btn) -> None:
         move_vector = None
@@ -276,21 +282,83 @@ class Handler:
 
     def toggle_object_scale(self, btn) -> None:
         global objScale
-        objScale = False
+        
         if (gtkBuilder.get_object('toggle_object_scale').get_active()):
             objScale = True
+        else:
+            objScale = False
 
     def toggle_object_move(self, btn) -> None:
         global objMove
-        objMove = False
+
         if (gtkBuilder.get_object('toggle_object_move').get_active()):
             objMove = True
+        else:
+            objMove = False
 
     def toggle_object_rotate(self, btn) -> None:
         global objRotate
-        objRotate = False
-        if (gtkBuilder.get_object('toggle_object_rotate').get_active()):
+
+        rotateIsActive = gtkBuilder.get_object('toggle_object_rotate').get_active()
+        if (rotateIsActive):
             objRotate = True
+            gtkBuilder.get_object('button_rotate_around_world_center').show_all()
+            gtkBuilder.get_object('button_rotate_around_object_center').show_all()
+            gtkBuilder.get_object('button_rotate_around_point_center').show_all()
+        else:
+            objRotate = False
+            gtkBuilder.get_object('button_rotate_around_world_center').hide()
+            gtkBuilder.get_object('button_rotate_around_object_center').hide()
+            gtkBuilder.get_object('button_rotate_around_point_center').hide()
+            gtkBuilder.get_object('point_of_rotation_entry').hide()
+
+        gtkBuilder.get_object('button_rotate_around_object_center').set_active(True)
+
+    def toggle_rotate_around_world_center(self, btn) -> None:
+        global rotateAroundWorldCenter, rotateAroundObjectCenter, rotateAroundPointCenter
+
+        if (gtkBuilder.get_object('button_rotate_around_world_center').get_active()):
+            rotateAroundWorldCenter = True
+            rotateAroundObjectCenter = False
+            rotateAroundPointCenter = False
+
+            gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_point_center').set_active(False)
+            gtkBuilder.get_object('point_of_rotation_entry').hide()
+        else:
+            self.toggle_rotate_around_object_center(None)
+
+    def toggle_rotate_around_object_center(self, btn) -> None:
+        global rotateAroundWorldCenter, rotateAroundObjectCenter, rotateAroundPointCenter
+
+        oneOtherSelected = gtkBuilder.get_object('button_rotate_around_world_center').get_active() or gtkBuilder.get_object('button_rotate_around_point_center').get_active()
+        thisOneSelected = gtkBuilder.get_object('button_rotate_around_object_center').get_active()
+
+        if((not oneOtherSelected) or thisOneSelected):        
+            rotateAroundWorldCenter = False
+            rotateAroundObjectCenter = True
+            rotateAroundPointCenter = False
+
+            gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_point_center').set_active(False)
+            gtkBuilder.get_object('point_of_rotation_entry').hide()
+
+            if (not oneOtherSelected):
+                gtkBuilder.get_object('button_rotate_around_object_center').set_active(True)
+
+    def toggle_rotate_around_point_center(self, btn) -> None:
+        global rotateAroundWorldCenter, rotateAroundObjectCenter, rotateAroundPointCenter
+
+        if (gtkBuilder.get_object('button_rotate_around_point_center').get_active()):
+            rotateAroundWorldCenter = False
+            rotateAroundObjectCenter = False
+            rotateAroundPointCenter = True
+
+            gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
+            gtkBuilder.get_object('point_of_rotation_entry').show_all()
+        else:
+            self.toggle_rotate_around_object_center(None)
 
     def close_dialog(self, btn) -> None:
         dialog.destroy()

@@ -6,8 +6,8 @@
     <property name="can_focus">False</property>
     <property name="title" translatable="yes">Computaçao Gráfica</property>
     <property name="resizable">False</property>
-    <property name="default_width">640</property>
-    <property name="default_height">520</property>
+    <property name="default_width">880</property>
+    <property name="default_height">640</property>
     <child>
       <placeholder/>
     </child>
@@ -15,7 +15,7 @@
       <object class="GtkPaned" id="panned_menu_funcoes">
         <property name="visible">True</property>
         <property name="can_focus">True</property>
-        <property name="position">172</property>
+        <property name="position">169</property>
         <child>
           <object class="GtkPaned" id="paned_label_funcoes">
             <property name="visible">True</property>
@@ -133,7 +133,7 @@
                                     <signal name="clicked" handler="window_moveUp_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">105</property>
+                                    <property name="x">102</property>
                                     <property name="y">3</property>
                                   </packing>
                                 </child>
@@ -148,7 +148,7 @@
                                     <signal name="clicked" handler="window_moveDown_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">101</property>
+                                    <property name="x">98</property>
                                     <property name="y">59</property>
                                   </packing>
                                 </child>
@@ -163,7 +163,7 @@
                                     <signal name="clicked" handler="window_moveLeft_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">83</property>
+                                    <property name="x">80</property>
                                     <property name="y">31</property>
                                   </packing>
                                 </child>
@@ -178,7 +178,7 @@
                                     <signal name="clicked" handler="window_moveRight_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">123</property>
+                                    <property name="x">120</property>
                                     <property name="y">31</property>
                                   </packing>
                                 </child>
@@ -295,7 +295,7 @@ sobre este objeto:</property>
                                             <property name="label" translatable="yes">Graus:</property>
                                           </object>
                                           <packing>
-                                            <property name="x">4</property>
+                                            <property name="x">41</property>
                                             <property name="y">8</property>
                                           </packing>
                                         </child>
@@ -310,50 +310,65 @@ sobre este objeto:</property>
                                             <property name="placeholder_text" translatable="yes">°</property>
                                           </object>
                                           <packing>
-                                            <property name="x">49</property>
+                                            <property name="x">85</property>
                                             <property name="y">3</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToggleButton" id="button_x">
-                                            <property name="label" translatable="yes">X</property>
+                                          <object class="GtkToggleButton" id="button_rotate_around_point_center">
+                                            <property name="label" translatable="yes">Ponto especifico</property>
                                             <property name="width_request">25</property>
                                             <property name="height_request">25</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
+                                            <signal name="toggled" handler="toggle_rotate_around_point_center" swapped="no"/>
                                           </object>
                                           <packing>
-                                            <property name="x">91</property>
-                                            <property name="y">3</property>
+                                            <property name="x">22</property>
+                                            <property name="y">100</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToggleButton" id="button_y">
-                                            <property name="label" translatable="yes">Y</property>
+                                          <object class="GtkToggleButton" id="button_rotate_around_object_center">
+                                            <property name="label" translatable="yes">Centro do objeto</property>
                                             <property name="width_request">25</property>
                                             <property name="height_request">25</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
+                                            <signal name="toggled" handler="toggle_rotate_around_object_center" swapped="no"/>
                                           </object>
                                           <packing>
-                                            <property name="x">118</property>
-                                            <property name="y">3</property>
+                                            <property name="x">21</property>
+                                            <property name="y">69</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToggleButton" id="button_z">
-                                            <property name="label" translatable="yes">Z</property>
+                                          <object class="GtkToggleButton" id="button_rotate_around_world_center">
+                                            <property name="label" translatable="yes">Centro do mundo</property>
                                             <property name="width_request">25</property>
                                             <property name="height_request">25</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
+                                            <signal name="toggled" handler="toggle_rotate_around_world_center" swapped="no"/>
                                           </object>
                                           <packing>
-                                            <property name="x">145</property>
-                                            <property name="y">3</property>
+                                            <property name="x">20</property>
+                                            <property name="y">39</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkEntry" id="point_of_rotation_entry">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="width_chars">10</property>
+                                            <property name="placeholder_text" translatable="yes">x,y</property>
+                                          </object>
+                                          <packing>
+                                            <property name="x">37</property>
+                                            <property name="y">134</property>
                                           </packing>
                                         </child>
                                       </object>
@@ -495,7 +510,7 @@ sobre este objeto:</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="orientation">vertical</property>
-                <property name="position">470</property>
+                <property name="position">566</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolled_viewport1">
                     <property name="visible">True</property>
