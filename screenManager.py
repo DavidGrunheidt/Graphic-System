@@ -214,13 +214,12 @@ class Handler:
         dialog.destroy()
 
     def set_object_selected(self, user_data) -> None:
-        global object_selected, objScale, objMove, objRotate, rotateAroundWorldCenter, rotateAroundObjectCenter, rotateAroundPointCenter
+        global object_selected, objScale, objMove, objRotate, rotateAroundWorldCenter, rotateAroundPointCenter
 
         objScale = False
         objMove = False
         objRotate = False
         rotateAroundWorldCenter = False
-        rotateAroundObjectCenter = False
         rotateAroundPointCenter = False
 
         gtkBuilder.get_object('toggle_object_rotate').set_active(False)
@@ -270,13 +269,21 @@ class Handler:
             except ValueError:
                 return show_error("Fatores Sx, Sy de escalonamento devem ser todos floats", window_widget)
 
+        point_of_rotation = []
         if (objRotate):
             try:
                 rotate_rate = float(gtkBuilder.get_object('object_rotate_rate_entry').get_text())
+                if (rotateAroundPointCenter):
+                    try:   
+                        point_of_rotation = [float(x) for x in gtkBuilder.get_object('point_of_rotation_entry').get_text().split(',')]
+                        if (len(point_of_rotation) < 2  or len(point_of_rotation) > 3):
+                            return show_error("Ponto de rotação deve ter 2 ou 3 coordenas \n (x,y) ou (x,y,z)", window_widget)
+                    except ValueError:
+                        return show_error("Valores do ponto de rotação devem ser todos floats", window_widget)
             except ValueError:
                 return show_error("Angulo de rotação deve ser float", window_widget)
 
-        change_object(object_selected, move_vector, scale_factors, rotate_rate)
+        change_object(object_selected, move_vector, scale_factors, rotate_rate, rotateAroundWorldCenter, rotateAroundPointCenter, point_of_rotation)
         redraw_all_objects()
 
 
@@ -315,11 +322,10 @@ class Handler:
         gtkBuilder.get_object('button_rotate_around_object_center').set_active(True)
 
     def toggle_rotate_around_world_center(self, btn) -> None:
-        global rotateAroundWorldCenter, rotateAroundObjectCenter, rotateAroundPointCenter
+        global rotateAroundWorldCenter, rotateAroundPointCenter
 
         if (gtkBuilder.get_object('button_rotate_around_world_center').get_active()):
             rotateAroundWorldCenter = True
-            rotateAroundObjectCenter = False
             rotateAroundPointCenter = False
 
             gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
@@ -329,14 +335,13 @@ class Handler:
             self.toggle_rotate_around_object_center(None)
 
     def toggle_rotate_around_object_center(self, btn) -> None:
-        global rotateAroundWorldCenter, rotateAroundObjectCenter, rotateAroundPointCenter
+        global rotateAroundWorldCenter, rotateAroundPointCenter
 
         oneOtherSelected = gtkBuilder.get_object('button_rotate_around_world_center').get_active() or gtkBuilder.get_object('button_rotate_around_point_center').get_active()
         thisOneSelected = gtkBuilder.get_object('button_rotate_around_object_center').get_active()
 
         if((not oneOtherSelected) or thisOneSelected):        
             rotateAroundWorldCenter = False
-            rotateAroundObjectCenter = True
             rotateAroundPointCenter = False
 
             gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
@@ -347,11 +352,10 @@ class Handler:
                 gtkBuilder.get_object('button_rotate_around_object_center').set_active(True)
 
     def toggle_rotate_around_point_center(self, btn) -> None:
-        global rotateAroundWorldCenter, rotateAroundObjectCenter, rotateAroundPointCenter
+        global rotateAroundWorldCenter, rotateAroundPointCenter
 
         if (gtkBuilder.get_object('button_rotate_around_point_center').get_active()):
             rotateAroundWorldCenter = False
-            rotateAroundObjectCenter = False
             rotateAroundPointCenter = True
 
             gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
