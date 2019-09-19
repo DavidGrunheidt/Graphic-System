@@ -103,8 +103,6 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 
 	display_file[name].set_coordinates(new_coordinates)
 
-	print(new_coordinates)
-
 def viewport_transform(coordinates):
 	coordinates_on_viewport = []
 	index_row = 0
