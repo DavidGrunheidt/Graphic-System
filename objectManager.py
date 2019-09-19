@@ -69,7 +69,7 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 
 	# Obs: Matrix multiplication will be on the order Rotate Matrix * Move Matrix * Scale Matrix always.
 	if rotate_rate:
-		rotate_matrix = np.array([[math.cos(rotate_rate), -math.sin(rotate_rate), 0], [math.sin(rotate_rate), math.cos(rotate_rate), 0], [0, 0, 1]])
+		rotate_matrix = np.array([[math.cos(math.radians(rotate_rate)), -math.sin(math.radians(rotate_rate)), 0], [math.sin(math.radians(rotate_rate)), math.cos(math.radians(rotate_rate)), 0], [0, 0, 1]])
 		
 		dx = cx
 		dy = cy
@@ -80,7 +80,7 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 
 		elif (rotateAroundPointCenter):
 			dx = pointOfRotation[0]
-			xy = pointOfRotation[1]
+			dy = pointOfRotation[1]
 
 		transformation_matrix = (np.array([[1, 0, 0], [0, 1, 0], [-dx, -dy, 1]]).dot(rotate_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [dx, dy, 0]]))
 
@@ -99,10 +99,11 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 		xAux.append(1)
 		coordinatesAux.append(xAux)
 
-	print(coordinatesAux)
 	new_coordinates = np.array(coordinatesAux).dot(transformation_matrix).tolist()
 
 	display_file[name].set_coordinates(new_coordinates)
+
+	print(new_coordinates)
 
 def viewport_transform(coordinates):
 	coordinates_on_viewport = []

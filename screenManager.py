@@ -28,7 +28,6 @@ def cgi_init() -> None:
 
     scale = gtkBuilder.get_object('label_porcentagem')
 
-
     gtkBuilder.connect_signals(Handler())
 
     window_widget.show_all()
@@ -198,6 +197,7 @@ class Handler:
 
         if (window_coordinates_raw == "original"):
             set_window_original_size()
+            scale.set_text("100%")
         else:
             coordinates_list = window_coordinates_raw.split(',')
 
