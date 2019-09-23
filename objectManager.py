@@ -25,7 +25,7 @@ viewport = {
 #List of objects.
 display_file: dict = {}
 
-def create_new_object(name: str, coordinates: 'string containing triples of x,y,z coordinates splitted by a ";"') -> Object :
+def create_new_object(name: str, coordinates: 'string containing triples of x,y,z coordinates splitted by a ";"', line_color: 'list containing [red, green, blue] amounts') -> Object :
 	coordinates_matrix = []
 	index_row = 0
 	for triple in coordinates.split(';'):
@@ -48,7 +48,7 @@ def create_new_object(name: str, coordinates: 'string containing triples of x,y,
 		else:
 			raise ValueError("Coordenadas devem ser duplas ou triplas")
 
-	newObject = Object(name, coordinates_matrix)
+	newObject = Object(name, coordinates_matrix, line_color)
 	display_file[name] = newObject
 
 	#For debug purpose
@@ -180,7 +180,7 @@ def get_viewport() -> (float, float, float, float):
 	return viewport
 
 def get_display_file() -> list:
-	return [x.coordinates for x in list(display_file.values())]
+	return list(display_file.values())
 
 
 

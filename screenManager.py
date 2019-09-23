@@ -37,7 +37,7 @@ def cgi_init() -> None:
 
     Gtk.main()
 
-def drawn_object(coordinates: list, isPoint: bool) -> None:
+def drawn_object(coordinates: list, isPoint: bool, line_color: 'list containing [red, green, blue] amounts') -> None:
     coordinates_on_viewport = viewport_transform(coordinates)
 
     cr = cairo.Context(surface)
@@ -53,13 +53,14 @@ def drawn_object(coordinates: list, isPoint: bool) -> None:
         #cr.line_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
         cr.close_path() #Se não puder usar esse usa o de cima pra fechar o poligono.
 
+    cr.set_source_rgb(line_color[0], line_color[1], line_color[2])
     cr.stroke()
     window_widget.queue_draw()
 
 def redraw_all_objects() -> None:
     clear_surface()
-    for coordinates in get_display_file():
-        drawn_object(coordinates, len(coordinates) == 1)
+    for obj in get_display_file():
+        drawn_object(obj.coordinates, len(coordinates) == 1, obj.line_color)
 
 # Clear the surface, removing the scribbles
 def clear_surface() -> None:
@@ -138,15 +139,26 @@ class Handler:
         else:
             newObj = None
 
+            line_color_str = gtkBuilder.get_object('combo_box_color_selected').get_active_text()
+
+            rgb = [0, 0, 0]
+            if (line_color_str == "Vermelho"):
+                rgb = [0.7, 0.2, 0]
+            elif (line_color_str == "Verde"):
+                rgb = [0.1, 0.8, 0]
+            elif (line_color_str == "Azul"):
+                rgb = [0.3, 0.4, 0.6]
+            elif (line_color_str == "Amarelo"):
+                rgb = [0.9, 0.9, 0.007]
+
             try: 
-                newObj = create_new_object(newObj_name, newObj_coordinates_raw)
+                newObj = create_new_object(newObj_name, newObj_coordinates_raw, rgb)
             except ValueError as e:
                 return show_error(str(e), dialog)
-                
 
             object_list.append_text(newObj.name+" ("+newObj.type+")")
             object_list.show_all()
-            drawn_object(newObj.coordinates, newObj.isPoint)
+            drawn_object(newObj.coordinates, newObj.isPoint, rgb)
 
             dialog.destroy()
     
