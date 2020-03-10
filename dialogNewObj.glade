@@ -103,37 +103,6 @@ Wireframe - 3+ duplas: x1,y2;x2,y2;x3,y3...</property>
             <property name="position">4</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkLabel" id="label_inform_object_color">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Selecione a cor do objeto:</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">5</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkComboBoxText" id="combo_box_color_selected">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="active">0</property>
-            <items>
-              <item id="0" translatable="yes">Preto</item>
-              <item id="1" translatable="yes">Vermelho</item>
-              <item id="2" translatable="yes">Verde</item>
-              <item id="3" translatable="yes">Azul</item>
-              <item id="4" translatable="yes">Amarelo</item>
-            </items>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">6</property>
-          </packing>
-        </child>
       </object>
     </child>
   </object>

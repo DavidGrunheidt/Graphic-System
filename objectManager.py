@@ -25,7 +25,7 @@ viewport = {
 #List of objects.
 display_file: dict = {}
 
-def create_new_object(name: str, coordinates: 'string containing triples of x,y,z coordinates splitted by a ";"', line_color: 'list containing [red, green, blue] amounts') -> Object :
+def create_new_object(name: str, coordinates: 'string containing triples of x,y,z coordinates splitted by a ";"') -> Object :
 	coordinates_matrix = []
 	index_row = 0
 	for triple in coordinates.split(';'):
@@ -48,60 +48,13 @@ def create_new_object(name: str, coordinates: 'string containing triples of x,y,
 		else:
 			raise ValueError("Coordenadas devem ser duplas ou triplas")
 
-	newObject = Object(name, coordinates_matrix, line_color)
+	newObject = Object(name, coordinates_matrix)
 	display_file[name] = newObject
 
 	#For debug purpose
 	print("Objeto "+"\""+newObject.name+"\" ("+newObject.type+") criado nas seguintes coordenadas = "+str(newObject.coordinates)+".\nDisplay File com "+str(len(display_file))+" objeto(s)") 
 
 	return newObject
-
-def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate: float, rotateAroundWorldCenter: bool, rotateAroundPointCenter: bool, pointOfRotation: 'list[float]') -> None:
-	move_matrix = np.array([])
-	scale_matrix = np.array([])
-	rotate_matrix = np.array([])
-	transformation_matrix = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-
-	coordinates = display_file[name].coordinates
-
-	cx = reduce(lambda x,y: x + y, [x[0] for x in coordinates])/len(coordinates)
-	cy = reduce(lambda x,y: x + y, [x[1] for x in coordinates])/len(coordinates)
-
-	# Obs: Matrix multiplication will be on the order Rotate Matrix * Move Matrix * Scale Matrix always.
-	if rotate_rate:
-		rotate_matrix = np.array([[math.cos(math.radians(rotate_rate)), -math.sin(math.radians(rotate_rate)), 0], [math.sin(math.radians(rotate_rate)), math.cos(math.radians(rotate_rate)), 0], [0, 0, 1]])
-		
-		dx = cx
-		dy = cy
-
-		if (rotateAroundWorldCenter):
-			dx = (window["xWinMax"] - window["xWinMin"])/2
-			dy = (window["yWinMax"] - window["yWinMin"])/2
-
-		elif (rotateAroundPointCenter):
-			dx = pointOfRotation[0]
-			dy = pointOfRotation[1]
-
-		transformation_matrix = (np.array([[1, 0, 0], [0, 1, 0], [-dx, -dy, 1]]).dot(rotate_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [dx, dy, 0]]))
-
-	if move_vector:
-		move_matrix = np.array([[1, 0, 0], [0, 1, 0], [move_vector[0], move_vector[1], 1]])
-		transformation_matrix = transformation_matrix.dot(move_matrix)
-
-	if scale_factors:
-		scale_matrix = np.array([[scale_factors[0], 0, 0], [0, scale_factors[1], 0], [0, 0, 1]])
-
-		transformation_matrix = ((transformation_matrix.dot(np.array([[1, 0, 0], [0, 1, 0], [-cx, -cy, 1]]))).dot(scale_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [cx, cy, 1]]))
-
-	coordinatesAux = []
-	for x in coordinates:
-		xAux = x[0:2]
-		xAux.append(1)
-		coordinatesAux.append(xAux)
-
-	new_coordinates = np.array(coordinatesAux).dot(transformation_matrix).tolist()
-
-	display_file[name].set_coordinates(new_coordinates)
 
 def viewport_transform(coordinates):
 	coordinates_on_viewport = []
