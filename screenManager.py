@@ -60,7 +60,7 @@ def drawn_object(coordinates: list, isPoint: bool, line_color: 'list containing 
 def redraw_all_objects() -> None:
     clear_surface()
     for obj in get_display_file():
-        drawn_object(obj.coordinates, len(coordinates) == 1, obj.line_color)
+        drawn_object(obj.coordinates, len(obj.coordinates) == 1, obj.line_color)
 
 # Clear the surface, removing the scribbles
 def clear_surface() -> None:
