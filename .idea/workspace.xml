@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="c111bba8-8ef9-418e-ab22-c83a34698b11" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/object.py" beforeDir="false" afterPath="$PROJECT_DIR$/object.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/objectManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/objectManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/screenManager.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="JupyterTrust" id="a3275563-41bd-4e3f-9e13-31046661192a" />
+  <component name="ProjectId" id="1guRwxpw0MBUFRsTQFCRahbcWdN" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="node.js.detected.package.eslint" value="true" />
+    <property name="node.js.detected.package.tslint" value="true" />
+    <property name="node.js.path.for.package.eslint" value="project" />
+    <property name="node.js.path.for.package.tslint" value="project" />
+    <property name="node.js.selected.package.eslint" value="(autodetect)" />
+    <property name="node.js.selected.package.tslint" value="(autodetect)" />
+    <property name="settings.editor.selected.configurable" value="preferences.keymap" />
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="c111bba8-8ef9-418e-ab22-c83a34698b11" name="Default Changelist" comment="" />
+      <created>1598962732961</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1598962732961</updated>
+      <workItem from="1598962734103" duration="1183000" />
+      <workItem from="1598995076124" duration="498000" />
+      <workItem from="1599051237053" duration="394000" />
+      <workItem from="1599063037113" duration="679000" />
+      <workItem from="1599100927959" duration="629000" />
+      <workItem from="1599134959642" duration="557000" />
+      <workItem from="1599342338663" duration="1138000" />
+      <workItem from="1599687449287" duration="234000" />
+      <workItem from="1599700547337" duration="2000" />
+      <workItem from="1599707027146" duration="839000" />
+      <workItem from="1599925102952" duration="39000" />
+      <workItem from="1599925159321" duration="7000" />
+      <workItem from="1599925905885" duration="1170000" />
+      <workItem from="1599927869997" duration="8733000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="192" y="110" key="DiffContextDialog" timestamp="1599943133505">
+      <screen x="0" y="23" width="1920" height="988" />
+    </state>
+    <state x="192" y="110" key="DiffContextDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1599943133505" />
+    <state x="710" y="143" key="RollbackChangesDialog" timestamp="1599943134879">
+      <screen x="0" y="23" width="1920" height="988" />
+    </state>
+    <state x="710" y="143" key="RollbackChangesDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1599943134879" />
+    <state x="469" y="156" key="SettingsEditor" timestamp="1599943274297">
+      <screen x="0" y="23" width="1920" height="988" />
+    </state>
+    <state x="469" y="156" key="SettingsEditor/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1599943274297" />
+    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1599941505334">
+      <screen x="0" y="23" width="1920" height="988" />
+    </state>
+    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1599941505334" />
+    <state x="668" y="256" width="584" height="522" key="find.popup" timestamp="1599943278353">
+      <screen x="0" y="23" width="1920" height="988" />
+    </state>
+    <state x="668" y="256" width="584" height="522" key="find.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1599943278353" />
+  </component>
+</project>

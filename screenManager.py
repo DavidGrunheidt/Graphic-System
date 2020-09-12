@@ -38,12 +38,13 @@ def cgi_init() -> None:
     Gtk.main()
 
 def drawn_object(coordinates: list, isPoint: bool, line_color: 'list containing [red, green, blue] amounts') -> None:
-    coordinates_on_viewport = viewport_transform(coordinates)
+    coordinates_on_window = world_to_window_coordinates_transform(coordinates)
+    coordinates_on_viewport = viewport_transform(coordinates_on_window)
 
     cr = cairo.Context(surface)
     cr.move_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
 
-    if (isPoint):
+    if isPoint:
         cr.line_to(coordinates_on_viewport[0][0]+1, coordinates_on_viewport[0][1]+1)
     else:
         index_row = 0
@@ -125,16 +126,31 @@ def show_dialog(file_name: str, window_id) -> None:
 
     dialog.show_all()
 
+def test() -> None:
+    obj1 = create_new_object(name='Amarelo', coordinates='10,10;110,30', line_color=[0.9, 0.9, 0.007])
+    obj2 = create_new_object(name='Vermelho', coordinates='56,65;150,172;80,210', line_color=[0.7, 0.2, 0])
+    obj3 = create_new_object(name='Verde', coordinates='50,200;70,210;90,300', line_color=[0.1, 0.8, 0])
+    obj4 = create_new_object(name='Azul', coordinates='80,150;160,320;300,300', line_color=[0.3, 0.4, 0.6])
+
+    objs = [obj1, obj2, obj3, obj4]
+
+    for obj in objs:
+        object_list.append_text(obj.name + " (" + obj.type + ")")
+        object_list.show_all()
+        drawn_object(obj.coordinates, obj.isPoint, obj.line_color)
+
 class Handler:
+
     # Function that will be called when the ok button is pressed
     def new_obj_clicked(self, widget) -> None:
         show_dialog('dialogNewObj.glade', 'dialog_new_obj')
+        test()
 
     def cofirm_new_obj(self, btn) -> None:
         newObj_coordinates_raw = gtkBuilder.get_object('object_coordinates_entry').get_text()
         newObj_name = gtkBuilder.get_object('newObj_name_entry').get_text()
 
-        if (newObj_name in display_file):
+        if newObj_name in display_file:
             show_error("Nome já definido, escolha outro nome.", dialog)
         else:
             newObj = None
@@ -151,7 +167,7 @@ class Handler:
             elif (line_color_str == "Amarelo"):
                 rgb = [0.9, 0.9, 0.007]
 
-            try: 
+            try:
                 newObj = create_new_object(newObj_name, newObj_coordinates_raw, rgb)
             except ValueError as e:
                 return show_error(str(e), dialog)
@@ -161,7 +177,7 @@ class Handler:
             drawn_object(newObj.coordinates, newObj.isPoint, rgb)
 
             dialog.destroy()
-    
+
     def btn_rotateX_toggled(self,btn) -> None:
         pass
 
@@ -175,15 +191,15 @@ class Handler:
         scale.set_text(str(float(scale.get_text().replace('%', '')) + (zoom_scale * 100))+'%')
         zoom_window(zoom_scale, "in")
         redraw_all_objects()
-        
+
     def window_zoomOut_clicked(self,btn) -> None:
-        if (float(scale.get_text().replace('%', '')) <= 40):
+        if float(scale.get_text().replace('%', '')) <= 40:
             return show_error("Escala não pode ser menor que 40%", window_widget)
 
         scale.set_text(str(float(scale.get_text().replace('%', '')) - (zoom_scale * 100))+'%')
         zoom_window(zoom_scale, "out")
         redraw_all_objects()
-        
+
     def window_moveUp_clicked(self,btn) -> None:
         move_window(move_step, "up")
         redraw_all_objects()
@@ -207,20 +223,20 @@ class Handler:
     def confirm_set_window(self, btn) -> None:
         window_coordinates_raw = gtkBuilder.get_object('window_coordinates_entry').get_text()
 
-        if (window_coordinates_raw == "original"):
+        if window_coordinates_raw == "original":
             set_window_original_size()
             scale.set_text("100%")
         else:
             coordinates_list = window_coordinates_raw.split(',')
 
-            if (len(coordinates_list) != 4):
+            if len(coordinates_list) != 4:
                 return show_error("Insira todos os valores pedidos!", dialog)
             else:
                 try:
                     set_window(float(coordinates_list[0]), float(coordinates_list[1]), float(coordinates_list[2]), float(coordinates_list[3]))
                 except ValueError:
                     return show_error("Coordenadas devem ser todas do tipo float", dialog)
-                    
+
 
         redraw_all_objects()
         dialog.destroy()
@@ -242,7 +258,7 @@ class Handler:
         gtkBuilder.get_object('point_of_rotation_entry').set_text("")
         gtkBuilder.get_object('toggle_object_move').set_active(False)
         gtkBuilder.get_object('object_move_entry').set_text("")
-        gtkBuilder.get_object('toggle_object_scale').set_active(False) 
+        gtkBuilder.get_object('toggle_object_scale').set_active(False)
         gtkBuilder.get_object('object_zoom_entry').set_text("")
 
         if object_list.get_active() == 0:
@@ -286,7 +302,7 @@ class Handler:
             try:
                 rotate_rate = float(gtkBuilder.get_object('object_rotate_rate_entry').get_text())
                 if (rotateAroundPointCenter):
-                    try:   
+                    try:
                         point_of_rotation = [float(x) for x in gtkBuilder.get_object('point_of_rotation_entry').get_text().split(',')]
                         if (len(point_of_rotation) < 2  or len(point_of_rotation) > 3):
                             return show_error("Ponto de rotação deve ter 2 ou 3 coordenas \n (x,y) ou (x,y,z)", window_widget)
@@ -301,7 +317,7 @@ class Handler:
 
     def toggle_object_scale(self, btn) -> None:
         global objScale
-        
+
         if (gtkBuilder.get_object('toggle_object_scale').get_active()):
             objScale = True
         else:
@@ -336,7 +352,7 @@ class Handler:
     def toggle_rotate_around_world_center(self, btn) -> None:
         global rotateAroundWorldCenter, rotateAroundPointCenter
 
-        if (gtkBuilder.get_object('button_rotate_around_world_center').get_active()):
+        if gtkBuilder.get_object('button_rotate_around_world_center').get_active():
             rotateAroundWorldCenter = True
             rotateAroundPointCenter = False
 
@@ -352,7 +368,7 @@ class Handler:
         oneOtherSelected = gtkBuilder.get_object('button_rotate_around_world_center').get_active() or gtkBuilder.get_object('button_rotate_around_point_center').get_active()
         thisOneSelected = gtkBuilder.get_object('button_rotate_around_object_center').get_active()
 
-        if((not oneOtherSelected) or thisOneSelected):        
+        if (not oneOtherSelected) or thisOneSelected:
             rotateAroundWorldCenter = False
             rotateAroundPointCenter = False
 
@@ -366,7 +382,7 @@ class Handler:
     def toggle_rotate_around_point_center(self, btn) -> None:
         global rotateAroundWorldCenter, rotateAroundPointCenter
 
-        if (gtkBuilder.get_object('button_rotate_around_point_center').get_active()):
+        if gtkBuilder.get_object('button_rotate_around_point_center').get_active():
             rotateAroundWorldCenter = False
             rotateAroundPointCenter = True
 

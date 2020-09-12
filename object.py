@@ -8,5 +8,5 @@ class Object:
 		self.type = "Ponto" if self.isPoint else "Linha" if self.isLine else "Wireframe"
 		self.line_color = line_color
 
-	def set_coordinates(self, new_coordinates: 'list[list[float]]') -> None:
+	def set_coordinates(self, new_coordinates: list) -> None:
 		self.coordinates = new_coordinates

@@ -10,7 +10,8 @@ window = {
 	"xWinMax": 0.0, 
 	"yWinMax": 0.0,
 	"xDif": 0.0,
-	"yDif": 0.0
+	"yDif": 0.0,
+	"vUpAngle": 0.0
 	}
 
 viewport = {
@@ -37,11 +38,11 @@ def create_new_object(name: str, coordinates: 'string containing triples of x,y,
 
 		coordinates_matrix.append([])
 
-		if (len(coordinates) == 2 or len(coordinates) == 3):
+		if len(coordinates) == 2 or len(coordinates) == 3:
 			for coordinate in coordinates:
 				coordinates_matrix[index_row].append(coordinate)
 
-			if (len(coordinates) == 2):
+			if len(coordinates) == 2:
 				coordinates_matrix[index_row].append(0)
 
 			index_row += 1
@@ -49,6 +50,7 @@ def create_new_object(name: str, coordinates: 'string containing triples of x,y,
 			raise ValueError("Coordenadas devem ser duplas ou triplas")
 
 	newObject = Object(name, coordinates_matrix, line_color)
+
 	display_file[name] = newObject
 
 	#For debug purpose
@@ -64,8 +66,8 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 
 	coordinates = display_file[name].coordinates
 
-	cx = reduce(lambda x,y: x + y, [x[0] for x in coordinates])/len(coordinates)
-	cy = reduce(lambda x,y: x + y, [x[1] for x in coordinates])/len(coordinates)
+	cx = reduce(lambda x, y: x + y, [x[0] for x in coordinates])/len(coordinates)
+	cy = reduce(lambda x, y: x + y, [x[1] for x in coordinates])/len(coordinates)
 
 	# Obs: Matrix multiplication will be on the order Rotate Matrix * Move Matrix * Scale Matrix always.
 	if rotate_rate:
@@ -74,11 +76,11 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 		dx = cx
 		dy = cy
 
-		if (rotateAroundWorldCenter):
+		if rotateAroundWorldCenter:
 			dx = (window["xWinMax"] - window["xWinMin"])/2
 			dy = (window["yWinMax"] - window["yWinMin"])/2
 
-		elif (rotateAroundPointCenter):
+		elif rotateAroundPointCenter:
 			dx = pointOfRotation[0]
 			dy = pointOfRotation[1]
 
@@ -103,11 +105,38 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 
 	display_file[name].set_coordinates(new_coordinates)
 
-def viewport_transform(coordinates):
+def world_to_window_coordinates_transform(coordinates) -> list:
+	cx = reduce(lambda x, y: x + y, [x[0] for x in coordinates])/len(coordinates)
+	cy = reduce(lambda x, y: x + y, [x[1] for x in coordinates])/len(coordinates)
+
+	x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
+	y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
+
+	v_up_angle = window["vUpAngle"]
+	rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0], [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
+	transformation_matrix = (np.array([[1, 0, 0], [0, 1, 0], [-x_wc, -y_wc, 1]]).dot(rotate_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [x_wc, y_wc, 0]]))
+
+	move_vector = [-x_wc, -y_wc]
+	move_matrix = np.array([[1, 0, 0], [0, 1, 0], [move_vector[0], move_vector[1], 1]])
+	transformation_matrix = transformation_matrix.dot(move_matrix)
+
+	scale_factors = [1,1]
+	scale_matrix = np.array([[scale_factors[0], 0, 0], [0, scale_factors[1], 0], [0, 0, 1]])
+	transformation_matrix = ((transformation_matrix.dot(np.array([[1, 0, 0], [0, 1, 0], [-cx, -cy, 1]]))).dot(scale_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [cx, cy, 1]]))
+
+	coordinatesAux = []
+	for x in coordinates:
+		xAux = x[0:2]
+		xAux.append(1)
+		coordinatesAux.append(xAux)
+
+	return np.array(coordinatesAux).dot(transformation_matrix).tolist()
+
+def viewport_transform(window_coordinates):
 	coordinates_on_viewport = []
 	index_row = 0
 
-	for triple in coordinates:
+	for triple in window_coordinates:
 		coordinates_on_viewport.append([])
 
 		# xw = triple[0]
@@ -126,7 +155,7 @@ def viewport_transform(coordinates):
 def zoom_window(scale: float, zoom_type: 'String -> Must be one of this options: in, out') -> None:
 	step_x = scale * window["xDif"]
 	step_y = scale * window["yDif"] 
-	if (zoom_type == "out"):
+	if zoom_type == "out":
 		step_x = step_x * -1
 		step_y = step_y * -1
 
@@ -136,10 +165,10 @@ def move_window(step: float, direction: 'String -> Must be one of this options: 
 	stepAux = step
 	# The if is testing for "down" instead of, intuitively test for "up", because the "y" axis is inverted on the viewport
 	# also, we want to move the objects to the inverse of where the window is moving (Window go down -> objects go up)
-	if (direction == "down" or direction == "right"): 
+	if direction == "down" or direction == "right":
 		stepAux *= -1
 
-	if (direction == "down" or direction == "up"):
+	if direction == "down" or direction == "up":
 		window["yWinMin"] += stepAux
 		window["yWinMax"] += stepAux
 	else:
@@ -148,12 +177,7 @@ def move_window(step: float, direction: 'String -> Must be one of this options: 
 
 def set_window_original_size():
 	global window
-	window["xWinMin"] = viewport["xVpMin"]
-	window["yWinMin"] = viewport["yVpMin"]
-	window["xWinMax"] = viewport["xVpMax"]
-	window["yWinMax"] = viewport["yVpMax"]
-	window["xDif"] = viewport["xDif"]
-	window["yDif"] = viewport["yDif"]
+	set_window(xWinMin=viewport["xVpMin"], yWinMin=viewport["yVpMin"], xWinMax=viewport["xVpMax"], yWinMax=viewport["yVpMax"])
 
 def set_window(xWinMin: float, yWinMin: float, xWinMax: float, yWinMax: float) -> None:
 	global window
