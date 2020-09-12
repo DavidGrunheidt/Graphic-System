@@ -237,7 +237,6 @@ class Handler:
                 except ValueError:
                     return show_error("Coordenadas devem ser todas do tipo float", dialog)
 
-
         redraw_all_objects()
         dialog.destroy()
 

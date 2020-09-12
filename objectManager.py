@@ -11,7 +11,7 @@ window = {
 	"yWinMax": 0.0,
 	"xDif": 0.0,
 	"yDif": 0.0,
-	"vUpAngle": 0.0
+	"vUpAngle": 25
 	}
 
 viewport = {
@@ -120,7 +120,7 @@ def world_to_window_coordinates_transform(coordinates) -> list:
 	move_matrix = np.array([[1, 0, 0], [0, 1, 0], [move_vector[0], move_vector[1], 1]])
 	transformation_matrix = transformation_matrix.dot(move_matrix)
 
-	scale_factors = [1,1]
+	scale_factors = [1, 1]
 	scale_matrix = np.array([[scale_factors[0], 0, 0], [0, scale_factors[1], 0], [0, 0, 1]])
 	transformation_matrix = ((transformation_matrix.dot(np.array([[1, 0, 0], [0, 1, 0], [-cx, -cy, 1]]))).dot(scale_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [cx, cy, 1]]))
 
