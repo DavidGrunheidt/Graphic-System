@@ -11,7 +11,7 @@ window = {
 	"yWinMax": 0.0,
 	"xDif": 0.0,
 	"yDif": 0.0,
-	"vUpAngle": 25
+	"vUpAngle": 0
 	}
 
 viewport = {
@@ -178,6 +178,7 @@ def move_window(step: float, direction: 'String -> Must be one of this options: 
 def set_window_original_size():
 	global window
 	set_window(xWinMin=viewport["xVpMin"], yWinMin=viewport["yVpMin"], xWinMax=viewport["xVpMax"], yWinMax=viewport["yVpMax"])
+	set_window_angle(0)
 
 def set_window(xWinMin: float, yWinMin: float, xWinMax: float, yWinMax: float) -> None:
 	global window
@@ -187,6 +188,10 @@ def set_window(xWinMin: float, yWinMin: float, xWinMax: float, yWinMax: float) -
 	window["yWinMax"] = yWinMax
 	window["xDif"] = xWinMax - xWinMin
 	window["yDif"] = yWinMax - yWinMin
+
+def set_window_angle(rotate_angle: float) -> None:
+	global window
+	window["vUpAngle"] = rotate_angle
 
 def set_viewport(xVpMin: float, yVpMin: float, xVpMax: float, yVpMax: float) -> None:
 	global viewport

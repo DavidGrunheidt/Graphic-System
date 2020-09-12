@@ -238,6 +238,54 @@
                                     <property name="y">63</property>
                                   </packing>
                                 </child>
+                                <child>
+                                  <object class="GtkEntry" id="window_rotation_rate_entry">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="width_chars">3</property>
+                                    <property name="max_width_chars">3</property>
+                                    <property name="placeholder_text" translatable="yes">°</property>
+                                  </object>
+                                  <packing>
+                                    <property name="x">59</property>
+                                    <property name="y">119</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="label_zoom2">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Graus:</property>
+                                  </object>
+                                  <packing>
+                                    <property name="x">8</property>
+                                    <property name="y">125</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="button_window_rotate">
+                                    <property name="label" translatable="yes">Rodar</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="window_rotate_clicked" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="x">108</property>
+                                    <property name="y">119</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkLabel" id="label_zoom3">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="label" translatable="yes">Rotação:</property>
+                                  </object>
+                                  <packing>
+                                    <property name="x">49</property>
+                                    <property name="y">96</property>
+                                  </packing>
+                                </child>
                               </object>
                               <packing>
                                 <property name="resize">False</property>
@@ -580,6 +628,18 @@ sobre este objeto:</property>
                       <packing>
                         <property name="x">51</property>
                         <property name="y">5</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="button_testar">
+                        <property name="label" translatable="yes">Testar</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <signal name="clicked" handler="button_testar_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="y">23</property>
                       </packing>
                     </child>
                   </object>

@@ -144,7 +144,6 @@ class Handler:
     # Function that will be called when the ok button is pressed
     def new_obj_clicked(self, widget) -> None:
         show_dialog('dialogNewObj.glade', 'dialog_new_obj')
-        test()
 
     def cofirm_new_obj(self, btn) -> None:
         newObj_coordinates_raw = gtkBuilder.get_object('object_coordinates_entry').get_text()
@@ -216,6 +215,10 @@ class Handler:
         move_window(move_step, "right")
         redraw_all_objects()
 
+    def window_rotate_clicked(sel, btn) -> None:
+        rotate_rate = float(gtkBuilder.get_object('window_rotation_rate_entry').get_text())
+        set_window_angle(rotate_rate)
+        redraw_all_objects()
 
     def set_window_clicked(self, btn) -> None:
         show_dialog('setWindowDialog.glade', 'dialog_set_window')
@@ -393,6 +396,9 @@ class Handler:
 
     def close_dialog(self, btn) -> None:
         dialog.destroy()
+
+    def button_testar_clicked(self, btn) -> None:
+        test()
 
 
 
