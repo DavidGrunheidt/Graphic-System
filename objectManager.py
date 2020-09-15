@@ -5,19 +5,19 @@ import math
 
 #2D Window and Viewport starts with 0 as all coordinates default values.
 window = {
-	"xWinMin": 0.0, 
-	"yWinMin": 0.0, 
-	"xWinMax": 0.0, 
+	"xWinMin": 0.0,
+	"yWinMin": 0.0,
+	"xWinMax": 0.0,
 	"yWinMax": 0.0,
 	"xDif": 0.0,
 	"yDif": 0.0,
-	"vUpAngle": 0
+	"vUpAngle": 0.0
 	}
 
 viewport = {
 	"xVpMin": 0.0,
-	"yVpMin": 0.0, 
-	"xVpMax": 0.0, 
+	"yVpMin": 0.0,
+	"xVpMax": 0.0,
 	"yVpMax": 0.0,
 	"xDif": 0.0,
 	"yDif": 0.0
@@ -54,7 +54,7 @@ def create_new_object(name: str, coordinates: 'string containing triples of x,y,
 	display_file[name] = newObject
 
 	#For debug purpose
-	print("Objeto "+"\""+newObject.name+"\" ("+newObject.type+") criado nas seguintes coordenadas = "+str(newObject.coordinates)+".\nDisplay File com "+str(len(display_file))+" objeto(s)") 
+	print("Objeto "+"\""+newObject.name+"\" ("+newObject.type+") criado nas seguintes coordenadas = "+str(newObject.coordinates)+".\nDisplay File com "+str(len(display_file))+" objeto(s)")
 
 	return newObject
 
@@ -72,7 +72,7 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 	# Obs: Matrix multiplication will be on the order Rotate Matrix * Move Matrix * Scale Matrix always.
 	if rotate_rate:
 		rotate_matrix = np.array([[math.cos(math.radians(rotate_rate)), -math.sin(math.radians(rotate_rate)), 0], [math.sin(math.radians(rotate_rate)), math.cos(math.radians(rotate_rate)), 0], [0, 0, 1]])
-		
+
 		dx = cx
 		dy = cy
 
@@ -106,44 +106,56 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 	display_file[name].set_coordinates(new_coordinates)
 
 def world_to_window_coordinates_transform(coordinates) -> list:
-	cx = reduce(lambda x, y: x + y, [x[0] for x in coordinates])/len(coordinates)
-	cy = reduce(lambda x, y: x + y, [x[1] for x in coordinates])/len(coordinates)
-
 	x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
 	y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
 
-	v_up_angle = window["vUpAngle"]
-	rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0], [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
-	transformation_matrix = (np.array([[1, 0, 0], [0, 1, 0], [-x_wc, -y_wc, 1]]).dot(rotate_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [x_wc, y_wc, 0]]))
+	cx = reduce(lambda x, y: x + y, [x[0] for x in coordinates])/len(coordinates)
+	cy = reduce(lambda x, y: x + y, [x[1] for x in coordinates])/len(coordinates)
+
+	new_coordinates = []
+	for cord in coordinates:
+		cord_aux = cord[0:2]
+		cord_aux.append(1)
+		new_coordinates.append(cord_aux)
 
 	move_vector = [-x_wc, -y_wc]
 	move_matrix = np.array([[1, 0, 0], [0, 1, 0], [move_vector[0], move_vector[1], 1]])
-	transformation_matrix = transformation_matrix.dot(move_matrix)
+	new_coordinates = np.array(new_coordinates).dot(move_matrix)
 
-	scale_factors = [1, 1]
+	v_up_angle = -window["vUpAngle"]
+	rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0], [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
+	new_coordinates = new_coordinates.dot(rotate_matrix)
+
+	sx = 1 / (window["xWinMax"] - window["xWinMin"])
+	sy = 1 / (window["yWinMax"] - window["yWinMin"])
+	scale_factors = [sx, sy]
 	scale_matrix = np.array([[scale_factors[0], 0, 0], [0, scale_factors[1], 0], [0, 0, 1]])
-	transformation_matrix = ((transformation_matrix.dot(np.array([[1, 0, 0], [0, 1, 0], [-cx, -cy, 1]]))).dot(scale_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [cx, cy, 1]]))
+	new_coordinates = new_coordinates.dot(scale_matrix)
 
-	coordinatesAux = []
-	for x in coordinates:
-		xAux = x[0:2]
-		xAux.append(1)
-		coordinatesAux.append(xAux)
-
-	return np.array(coordinatesAux).dot(transformation_matrix).tolist()
+	return new_coordinates.tolist()
 
 def viewport_transform(window_coordinates):
 	coordinates_on_viewport = []
 	index_row = 0
 
+	coordinates = world_to_window_coordinates_transform([[window["xWinMin"], window["yWinMin"]], [window["xWinMax"], window["yWinMax"]]])
+
+	x_min = coordinates[0][0]
+	x_max = coordinates[1][0]
+	x_dif = x_max - x_min
+
+	y_min = coordinates[0][1]
+	y_max = coordinates[1][1]
+	y_dif = y_max - y_min
+
 	for triple in window_coordinates:
 		coordinates_on_viewport.append([])
 
 		# xw = triple[0]
-		xVp = ((triple[0] - window["xWinMin"]) / window["xDif"]) * viewport["xDif"]
+		xVp = ((triple[0] - x_min) / x_dif) * viewport["xDif"]
 
 		# yw = triple[1]
-		yVp = (1 - ((triple[1] - window["yWinMin"]) / window["yDif"])) * viewport["yDif"]
+		yVp = (1 - ((triple[1] - y_min) / y_dif)) * viewport["yDif"]
 
 		coordinates_on_viewport[index_row].append(xVp)
 		coordinates_on_viewport[index_row].append(yVp)
@@ -154,7 +166,7 @@ def viewport_transform(window_coordinates):
 
 def zoom_window(scale: float, zoom_type: 'String -> Must be one of this options: in, out') -> None:
 	step_x = scale * window["xDif"]
-	step_y = scale * window["yDif"] 
+	step_y = scale * window["yDif"]
 	if zoom_type == "out":
 		step_x = step_x * -1
 		step_y = step_y * -1
@@ -178,7 +190,7 @@ def move_window(step: float, direction: 'String -> Must be one of this options: 
 def set_window_original_size():
 	global window
 	set_window(xWinMin=viewport["xVpMin"], yWinMin=viewport["yVpMin"], xWinMax=viewport["xVpMax"], yWinMax=viewport["yVpMax"])
-	set_window_angle(0)
+	window["vUpAngle"] = 0.0
 
 def set_window(xWinMin: float, yWinMin: float, xWinMax: float, yWinMax: float) -> None:
 	global window
@@ -191,7 +203,7 @@ def set_window(xWinMin: float, yWinMin: float, xWinMax: float, yWinMax: float) -
 
 def set_window_angle(rotate_angle: float) -> None:
 	global window
-	window["vUpAngle"] = rotate_angle
+	window["vUpAngle"] += rotate_angle
 
 def set_viewport(xVpMin: float, yVpMin: float, xVpMax: float, yVpMax: float) -> None:
 	global viewport
