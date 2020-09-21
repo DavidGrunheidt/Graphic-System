@@ -124,10 +124,10 @@ def show_dialog(file_name: str, window_id) -> None:
     dialog.show_all()
 
 def test() -> None:
-    obj1 = create_new_object(name='Amarelo', coordinates='10,10;110,30', line_color=[0.9, 0.9, 0.007])
-    obj2 = create_new_object(name='Vermelho', coordinates='56,65;150,172;80,210', line_color=[0.7, 0.2, 0])
-    obj3 = create_new_object(name='Verde', coordinates='50,200;70,210;90,300', line_color=[0.1, 0.8, 0])
-    obj4 = create_new_object(name='Azul', coordinates='80,150;160,320;300,300', line_color=[0.3, 0.4, 0.6])
+    obj1 = create_new_object(name='Amr', coordinates='10,10;110,30', line_color=[0.9, 0.9, 0.007])
+    obj2 = create_new_object(name='Verm', coordinates='56,65;150,172;80,210', line_color=[0.7, 0.2, 0])
+    obj3 = create_new_object(name='Verd', coordinates='50,200;70,210;90,300', line_color=[0.1, 0.8, 0])
+    obj4 = create_new_object(name='Az', coordinates='80,150;160,320;300,300', line_color=[0.3, 0.4, 0.6])
 
     objs = [obj1, obj2, obj3, obj4]
 
