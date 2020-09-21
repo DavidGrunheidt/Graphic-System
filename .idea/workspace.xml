@@ -20,10 +20,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c111bba8-8ef9-418e-ab22-c83a34698b11" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/Graphic-System.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Graphic-System.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/object.py" beforeDir="false" afterPath="$PROJECT_DIR$/object.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/objectManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/objectManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/screenManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/screenManager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -82,6 +82,13 @@
       <workItem from="1599925905885" duration="1170000" />
       <workItem from="1599927869997" duration="9283000" />
       <workItem from="1600205991060" duration="460000" />
+      <workItem from="1600219424495" duration="1322000" />
+      <workItem from="1600271486109" duration="7000" />
+      <workItem from="1600355716133" duration="815000" />
+      <workItem from="1600374982639" duration="14000" />
+      <workItem from="1600694786051" duration="6648000" />
+      <workItem from="1600702661289" duration="522000" />
+      <workItem from="1600711501999" duration="2443000" />
     </task>
     <servers />
   </component>
@@ -101,14 +108,14 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="191" y="110" key="DiffContextDialog" timestamp="1600211894846">
+    <state x="191" y="110" key="DiffContextDialog" timestamp="1600712562218">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="191" y="110" key="DiffContextDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1600211894846" />
-    <state x="710" y="143" key="RollbackChangesDialog" timestamp="1600211896071">
+    <state x="191" y="110" key="DiffContextDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1600712562218" />
+    <state x="710" y="143" key="RollbackChangesDialog" timestamp="1600712563267">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="710" y="143" key="RollbackChangesDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1600211896071" />
+    <state x="710" y="143" key="RollbackChangesDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1600712563267" />
     <state x="469" y="156" key="SettingsEditor" timestamp="1599943274297">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
@@ -117,9 +124,13 @@
       <screen x="0" y="23" width="1920" height="988" />
     </state>
     <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1599941505334" />
-    <state x="668" y="256" width="584" height="522" key="find.popup" timestamp="1600211207993">
+    <state x="668" y="256" width="584" height="522" key="find.popup" timestamp="1600700882738">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="668" y="256" width="584" height="522" key="find.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1600211207993" />
+    <state x="668" y="256" width="584" height="522" key="find.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1600700882738" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1600699396143">
+      <screen x="0" y="23" width="1920" height="988" />
+    </state>
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1600699396143" />
   </component>
 </project>

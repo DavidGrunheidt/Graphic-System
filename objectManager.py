@@ -11,8 +11,8 @@ window = {
 	"yWinMax": 0.0,
 	"xDif": 0.0,
 	"yDif": 0.0,
-	"vUpAngle": 0.0
-	}
+	"vUpAngle": 0.0,
+}
 
 viewport = {
 	"xVpMin": 0.0,
@@ -21,12 +21,12 @@ viewport = {
 	"yVpMax": 0.0,
 	"xDif": 0.0,
 	"yDif": 0.0
-	}
+}
 
-#List of objects.
+# List of objects.
 display_file: dict = {}
 
-def create_new_object(name: str, coordinates: 'string containing triples of x,y,z coordinates splitted by a ";"', line_color: 'list containing [red, green, blue] amounts') -> Object :
+def create_new_object(name: str, coordinates: str, line_color: list) -> Object:
 	coordinates_matrix = []
 	index_row = 0
 	for triple in coordinates.split(';'):
@@ -49,14 +49,17 @@ def create_new_object(name: str, coordinates: 'string containing triples of x,y,
 		else:
 			raise ValueError("Coordenadas devem ser duplas ou triplas")
 
-	newObject = Object(name, coordinates_matrix, line_color)
+	normalized_coordinates = world_to_window_coordinates_transform(coordinates_matrix)
 
-	display_file[name] = newObject
+	new_object = Object(name, coordinates_matrix, line_color)
+	new_object.setNormalizedCoordinates(normalized_coordinates)
 
-	#For debug purpose
-	print("Objeto "+"\""+newObject.name+"\" ("+newObject.type+") criado nas seguintes coordenadas = "+str(newObject.coordinates)+".\nDisplay File com "+str(len(display_file))+" objeto(s)")
+	display_file[name] = new_object
 
-	return newObject
+	# For debug purpose
+	print("Objeto "+"\""+new_object.name+"\" ("+new_object.type+") criado nas seguintes coordenadas = "+str(new_object.coordinates)+".\nDisplay File com "+str(len(display_file))+" objeto(s)")
+
+	return new_object
 
 def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate: float, rotateAroundWorldCenter: bool, rotateAroundPointCenter: bool, pointOfRotation: 'list[float]') -> None:
 	move_matrix = np.array([])
@@ -95,22 +98,21 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 
 		transformation_matrix = ((transformation_matrix.dot(np.array([[1, 0, 0], [0, 1, 0], [-cx, -cy, 1]]))).dot(scale_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [cx, cy, 1]]))
 
-	coordinatesAux = []
+	coordinates_aux = []
 	for x in coordinates:
-		xAux = x[0:2]
-		xAux.append(1)
-		coordinatesAux.append(xAux)
+		x_aux = x[0:2]
+		x_aux.append(1)
+		coordinates_aux.append(x_aux)
 
-	new_coordinates = np.array(coordinatesAux).dot(transformation_matrix).tolist()
+	new_coordinates = np.array(coordinates_aux).dot(transformation_matrix).tolist()
+	new_normalized_coordinates = world_to_window_coordinates_transform(new_coordinates)
 
 	display_file[name].set_coordinates(new_coordinates)
+	display_file[name].setNormalizedCoordinates(new_normalized_coordinates)
 
-def world_to_window_coordinates_transform(coordinates) -> list:
+def world_to_window_coordinates_transform(coordinates: list) -> list:
 	x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
 	y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
-
-	cx = reduce(lambda x, y: x + y, [x[0] for x in coordinates])/len(coordinates)
-	cy = reduce(lambda x, y: x + y, [x[1] for x in coordinates])/len(coordinates)
 
 	new_coordinates = []
 	for cord in coordinates:
@@ -134,21 +136,14 @@ def world_to_window_coordinates_transform(coordinates) -> list:
 
 	return new_coordinates.tolist()
 
-def viewport_transform(window_coordinates):
+def viewport_transform(obj_name: str):
 	coordinates_on_viewport = []
 	index_row = 0
 
-	coordinates = world_to_window_coordinates_transform([[window["xWinMin"], window["yWinMin"]], [window["xWinMax"], window["yWinMax"]]])
+	x_min, y_min = -1, -1
+	x_dif, y_dif = 2, 2
 
-	x_min = coordinates[0][0]
-	x_max = coordinates[1][0]
-	x_dif = x_max - x_min
-
-	y_min = coordinates[0][1]
-	y_max = coordinates[1][1]
-	y_dif = y_max - y_min
-
-	for triple in window_coordinates:
+	for triple in display_file[obj_name].normalizedCoordinates:
 		coordinates_on_viewport.append([])
 
 		# xw = triple[0]
@@ -164,28 +159,32 @@ def viewport_transform(window_coordinates):
 
 	return coordinates_on_viewport
 
-def zoom_window(scale: float, zoom_type: 'String -> Must be one of this options: in, out') -> None:
-	step_x = scale * window["xDif"]
-	step_y = scale * window["yDif"]
-	if zoom_type == "out":
-		step_x = step_x * -1
-		step_y = step_y * -1
+def zoom_window(scale: float) -> None:
+	scale_matrix = np.array([[scale, 0, 0], [0, scale, 0], [0, 0, 1]])
 
-	set_window(window["xWinMin"] + step_x, window["yWinMin"] + step_y, window["xWinMax"] - step_x, window["yWinMax"] - step_y)
+	for obj in display_file:
+		coordinates = display_file[obj].normalizedCoordinates
+		coord_aux = np.array(coordinates).dot(scale_matrix)
+		display_file[obj].setNormalizedCoordinates(coord_aux.tolist())
 
-def move_window(step: float, direction: 'String -> Must be one of this options: left, right, up or down') -> None:
-	stepAux = step
-	# The if is testing for "down" instead of, intuitively test for "up", because the "y" axis is inverted on the viewport
-	# also, we want to move the objects to the inverse of where the window is moving (Window go down -> objects go up)
-	if direction == "down" or direction == "right":
-		stepAux *= -1
+def move_window(step_x: float, step_y: float) -> None:
+	move_matrix = np.array([[1, 0, 0], [0, 1, 0], [step_x, step_y, 1]])
 
-	if direction == "down" or direction == "up":
-		window["yWinMin"] += stepAux
-		window["yWinMax"] += stepAux
-	else:
-		window["xWinMin"] += stepAux
-		window["xWinMax"] += stepAux
+	for obj in display_file:
+		coordinates = display_file[obj].normalizedCoordinates
+		coord_aux = np.array(coordinates).dot(move_matrix)
+		display_file[obj].setNormalizedCoordinates(coord_aux.tolist())
+
+def rotate_window(rotate_angle: float) -> None:
+	v_up_angle = -rotate_angle
+	window["vUpAngle"] += v_up_angle
+
+	rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0], [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
+
+	for obj in display_file:
+		coordinates = display_file[obj].normalizedCoordinates
+		coord_aux = np.array(coordinates).dot(rotate_matrix)
+		display_file[obj].setNormalizedCoordinates(coord_aux.tolist())
 
 def set_window_original_size():
 	global window
@@ -200,10 +199,6 @@ def set_window(xWinMin: float, yWinMin: float, xWinMax: float, yWinMax: float) -
 	window["yWinMax"] = yWinMax
 	window["xDif"] = xWinMax - xWinMin
 	window["yDif"] = yWinMax - yWinMin
-
-def set_window_angle(rotate_angle: float) -> None:
-	global window
-	window["vUpAngle"] += rotate_angle
 
 def set_viewport(xVpMin: float, yVpMin: float, xVpMax: float, yVpMax: float) -> None:
 	global viewport

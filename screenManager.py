@@ -6,8 +6,8 @@ from objectManager import *
 
 surface = None
 
-zoom_scale = 0.05
-move_step = 10
+zoom_scale = 0.5
+move_step = 0.1
 
 def cgi_init() -> None:
     global gtkBuilder, window_widget, drawing_area, object_list, scale, change_obj_options
@@ -37,22 +37,19 @@ def cgi_init() -> None:
 
     Gtk.main()
 
-def drawn_object(coordinates: list, isPoint: bool, line_color: 'list containing [red, green, blue] amounts') -> None:
-    coordinates_on_window = world_to_window_coordinates_transform(coordinates)
-    coordinates_on_viewport = viewport_transform(coordinates_on_window)
+def drawn_object(obj_name: str, is_point: bool, line_color: list) -> None:
+    coordinates_on_viewport = viewport_transform(obj_name)
 
     cr = cairo.Context(surface)
     cr.move_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
 
-    if isPoint:
+    if is_point:
         cr.line_to(coordinates_on_viewport[0][0]+1, coordinates_on_viewport[0][1]+1)
     else:
-        index_row = 0
-        index_column = 0
         for coordinates in coordinates_on_viewport[1:len(coordinates_on_viewport)]:
             cr.line_to(coordinates[0], coordinates[1])
-        #cr.line_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
-        cr.close_path() #Se não puder usar esse usa o de cima pra fechar o poligono.
+        # cr.line_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
+        cr.close_path() # Se não puder usar esse usa o de cima pra fechar o poligono.
 
     cr.set_source_rgb(line_color[0], line_color[1], line_color[2])
     cr.stroke()
@@ -61,7 +58,7 @@ def drawn_object(coordinates: list, isPoint: bool, line_color: 'list containing 
 def redraw_all_objects() -> None:
     clear_surface()
     for obj in get_display_file():
-        drawn_object(obj.coordinates, len(obj.coordinates) == 1, obj.line_color)
+        drawn_object(obj.name, len(obj.coordinates) == 1, obj.line_color)
 
 # Clear the surface, removing the scribbles
 def clear_surface() -> None:
@@ -137,7 +134,7 @@ def test() -> None:
     for obj in objs:
         object_list.append_text(obj.name + " (" + obj.type + ")")
         object_list.show_all()
-        drawn_object(obj.coordinates, obj.isPoint, obj.line_color)
+        drawn_object(obj.name, obj.isPoint, obj.line_color)
 
 class Handler:
 
@@ -173,7 +170,7 @@ class Handler:
 
             object_list.append_text(newObj.name+" ("+newObj.type+")")
             object_list.show_all()
-            drawn_object(newObj.coordinates, newObj.isPoint, rgb)
+            drawn_object(newObj.name, newObj.isPoint, rgb)
 
             dialog.destroy()
 
@@ -188,7 +185,7 @@ class Handler:
 
     def window_zoomIn_clicked(self,btn) -> None:
         scale.set_text(str(float(scale.get_text().replace('%', '')) + (zoom_scale * 100))+'%')
-        zoom_window(zoom_scale, "in")
+        zoom_window(1/zoom_scale)
         redraw_all_objects()
 
     def window_zoomOut_clicked(self,btn) -> None:
@@ -196,28 +193,28 @@ class Handler:
             return show_error("Escala não pode ser menor que 40%", window_widget)
 
         scale.set_text(str(float(scale.get_text().replace('%', '')) - (zoom_scale * 100))+'%')
-        zoom_window(zoom_scale, "out")
+        zoom_window(zoom_scale)
         redraw_all_objects()
 
     def window_moveUp_clicked(self,btn) -> None:
-        move_window(move_step, "up")
+        move_window(0, -move_step)
         redraw_all_objects()
 
     def window_moveDown_clicked(self,btn) -> None:
-        move_window(move_step, "down")
+        move_window(0, move_step)
         redraw_all_objects()
 
     def window_moveRight_clicked(self,btn) -> None:
-        move_window(move_step, "left")
+        move_window(-move_step, 0)
         redraw_all_objects()
 
     def window_moveLeft_clicked(self,btn) -> None:
-        move_window(move_step, "right")
+        move_window(move_step, 0)
         redraw_all_objects()
 
     def window_rotate_clicked(sel, btn) -> None:
-        rotate_rate = float(gtkBuilder.get_object('window_rotation_rate_entry').get_text())
-        set_window_angle(rotate_rate)
+        rotate_angle = float(gtkBuilder.get_object('window_rotation_rate_entry').get_text())
+        rotate_window(rotate_angle)
         redraw_all_objects()
 
     def set_window_clicked(self, btn) -> None:
