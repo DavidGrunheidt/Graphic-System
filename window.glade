@@ -227,14 +227,14 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button_set_window">
-                                    <property name="label" translatable="yes">Set window</property>
+                                    <property name="label" translatable="yes">Reset</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <signal name="clicked" handler="set_window_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">1</property>
+                                    <property name="x">19</property>
                                     <property name="y">63</property>
                                   </packing>
                                 </child>
