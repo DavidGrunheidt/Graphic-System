@@ -6,7 +6,7 @@ from objectManager import *
 
 surface = None
 
-zoom_scale = 0.5
+zoom_scale = 0.8
 move_step = 0.1
 
 def cgi_init() -> None:
@@ -184,7 +184,7 @@ class Handler:
         pass
 
     def window_zoomIn_clicked(self,btn) -> None:
-        scale.set_text(str(float(scale.get_text().replace('%', '')) + (zoom_scale * 100))+'%')
+        scale.set_text(str(float(scale.get_text().replace('%', '')) + ((1 - zoom_scale) * 100))+'%')
         zoom_window(1/zoom_scale)
         redraw_all_objects()
 
@@ -192,7 +192,7 @@ class Handler:
         if float(scale.get_text().replace('%', '')) <= 40:
             return show_error("Escala não pode ser menor que 40%", window_widget)
 
-        scale.set_text(str(float(scale.get_text().replace('%', '')) - (zoom_scale * 100))+'%')
+        scale.set_text(str(float(scale.get_text().replace('%', '')) - ((1 - zoom_scale) * 100))+'%')
         zoom_window(zoom_scale)
         redraw_all_objects()
 
@@ -312,7 +312,6 @@ class Handler:
 
         change_object(object_selected, move_vector, scale_factors, rotate_rate, rotateAroundWorldCenter, rotateAroundPointCenter, point_of_rotation)
         redraw_all_objects()
-
 
     def toggle_object_scale(self, btn) -> None:
         global objScale
