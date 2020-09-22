@@ -86,7 +86,7 @@ def configure_event_cb(wid, evt) -> None:
         height)
 
     set_viewport(0, 0, width, height)
-    set_window_original_size()
+    set_window(0, 0, width, height)
 
     clear_surface()
 
@@ -218,7 +218,9 @@ class Handler:
         redraw_all_objects()
 
     def set_window_clicked(self, btn) -> None:
-        show_dialog('setWindowDialog.glade', 'dialog_set_window')
+        set_window_original_size()
+        redraw_all_objects()
+        # show_dialog('setWindowDialog.glade', 'dialog_set_window')
 
     def confirm_set_window(self, btn) -> None:
         window_coordinates_raw = gtkBuilder.get_object('window_coordinates_entry').get_text()
@@ -395,6 +397,7 @@ class Handler:
 
     def button_testar_clicked(self, btn) -> None:
         test()
+        gtkBuilder.get_object('button_testar').hide()
 
 
 

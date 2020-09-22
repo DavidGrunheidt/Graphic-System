@@ -132,7 +132,6 @@ def world_to_window_coordinates_transform(coordinates: list) -> list:
 	scale_matrix = np.array([[sx, 0, 0], [0, sy, 0], [0, 0, 1]])
 
 	new_coordinates = new_coordinates.dot(scale_matrix)
-
 	return new_coordinates.dot(window["transformations"]).tolist()
 
 def viewport_transform(obj_name: str):
@@ -162,7 +161,6 @@ def viewport_transform(obj_name: str):
 def zoom_window(scale: float) -> None:
 	global display_file, window
 	scale_matrix = np.array([[scale, 0, 0], [0, scale, 0], [0, 0, 1]])
-
 	window["transformations"] = window["transformations"].dot(scale_matrix)
 
 	for obj in display_file:
@@ -172,53 +170,65 @@ def zoom_window(scale: float) -> None:
 def move_window(step_x: float, step_y: float) -> None:
 	global display_file, window
 	move_matrix = np.array([[1, 0, 0], [0, 1, 0], [step_x, step_y, 1]])
-
 	window["transformations"] = window["transformations"].dot(move_matrix)
 
 	for obj in display_file:
 		coordinates = np.array(display_file[obj].normalizedCoordinates).dot(move_matrix)
 		display_file[obj].setNormalizedCoordinates(coordinates.tolist())
 
+# Problema -> Roda -> Move Objeto Ou da Zoom -> Roda Dnvo -> Move objeto ou da zoom (objeto sai da posicao desejada)
 def rotate_window(rotate_angle: float) -> None:
-	global display_file
-	v_up_angle = -rotate_angle
-	rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0], [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
+	global display_file, window
+	window_v_up_angle = window["vUpAngle"]
 
-	window["vUpAngle"] += v_up_angle
+	window_v_up_angle -= rotate_angle
+	if window_v_up_angle <= -360:
+		window_v_up_angle += 360
+	elif window_v_up_angle >= 360:
+		window_v_up_angle -= 360
+
+	window["vUpAngle"] = window_v_up_angle
+
+	# rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0], [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
 
 	for obj in display_file:
-		coordinates = np.array(display_file[obj].normalizedCoordinates).dot(rotate_matrix)
-		display_file[obj].setNormalizedCoordinates(coordinates.tolist())
+		coordinates = world_to_window_coordinates_transform(display_file[obj].coordinates)
+		display_file[obj].setNormalizedCoordinates(coordinates)
+		# coordinates = np.array(display_file[obj].normalizedCoordinates).dot(rotate_matrix)
+		# display_file[obj].setNormalizedCoordinates(coordinates)
 
 def set_window_original_size():
 	global window
-	set_window(xWinMin=viewport["xVpMin"], yWinMin=viewport["yVpMin"], xWinMax=viewport["xVpMax"], yWinMax=viewport["yVpMax"])
 	window["vUpAngle"] = 0.0
 	window["transformations"] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 
-def set_window(xWinMin: float, yWinMin: float, xWinMax: float, yWinMax: float) -> None:
+	for obj in display_file:
+		coordinates = world_to_window_coordinates_transform(display_file[obj].coordinates)
+		display_file[obj].setNormalizedCoordinates(coordinates)
+
+def set_window(x_win_min: float, y_win_min: float, x_win_max: float, y_win_max: float) -> None:
 	global window
-	window["xWinMin"] = xWinMin
-	window["yWinMin"] = yWinMin
-	window["xWinMax"] = xWinMax
-	window["yWinMax"] = yWinMax
-	window["xDif"] = xWinMax - xWinMin
-	window["yDif"] = yWinMax - yWinMin
+	window["xWinMin"] = x_win_min
+	window["yWinMin"] = y_win_min
+	window["xWinMax"] = x_win_max
+	window["yWinMax"] = y_win_max
+	window["xDif"] = x_win_max - x_win_min
+	window["yDif"] = y_win_max - y_win_min
 
-def set_viewport(xVpMin: float, yVpMin: float, xVpMax: float, yVpMax: float) -> None:
+def set_viewport(x_vp_min: float, y_vp_min: float, x_vp_max: float, y_vp_max: float) -> None:
 	global viewport
-	viewport["xVpMin"] = xVpMin
-	viewport["yVpMin"] = yVpMin
-	viewport["xVpMax"] = xVpMax
-	viewport["yVpMax"] = yVpMax
-	viewport["xDif"] = xVpMax - xVpMin
-	viewport["yDif"] = yVpMax - yVpMin
+	viewport["xVpMin"] = x_vp_min
+	viewport["yVpMin"] = y_vp_min
+	viewport["xVpMax"] = x_vp_max
+	viewport["yVpMax"] = y_vp_max
+	viewport["xDif"] = x_vp_max - x_vp_min
+	viewport["yDif"] = y_vp_max - y_vp_min
 
-def get_window() -> list:
+def get_window() -> dict:
 	global window
 	return window
 
-def get_viewport() -> list:
+def get_viewport() -> dict:
 	global viewport
 	return viewport
 
