@@ -24,6 +24,8 @@ viewport = {
 	"yDif": 0.0
 }
 
+canvas = [[-0.90, -0.90], [0.90, -0.90], [0.90, 0.90], [-0.90, 0.90]]
+
 # List of objects.
 display_file: dict = {}
 
@@ -108,13 +110,13 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 	display_file[name].set_coordinates(new_coordinates)
 	display_file[name].setNormalizedCoordinates(normalized_coordinates)
 
-def world_to_window_coordinates_transform(coordinates: list) -> list:
+def world_to_window_coordinates_transform(world_coordinates: list) -> list:
 	global window
 	x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
 	y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
 
 	new_coordinates = []
-	for cord in coordinates:
+	for cord in world_coordinates:
 		cord_aux = cord[0:2]
 		cord_aux.append(1)
 		new_coordinates.append(cord_aux)
@@ -134,7 +136,7 @@ def world_to_window_coordinates_transform(coordinates: list) -> list:
 	new_coordinates = new_coordinates.dot(scale_matrix)
 	return new_coordinates.dot(window["transformations"]).tolist()
 
-def viewport_transform(obj_name: str):
+def viewport_transform(normalized_coordinates: list) -> list:
 	global display_file, viewport
 	coordinates_on_viewport = []
 	index_row = 0
@@ -142,7 +144,7 @@ def viewport_transform(obj_name: str):
 	x_min, y_min = -1, -1
 	x_dif, y_dif = 2, 2
 
-	for triple in display_file[obj_name].normalizedCoordinates:
+	for triple in normalized_coordinates:
 		coordinates_on_viewport.append([])
 
 		# xw = triple[0]
@@ -189,13 +191,9 @@ def rotate_window(rotate_angle: float) -> None:
 
 	window["vUpAngle"] = window_v_up_angle
 
-	# rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0], [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
-
 	for obj in display_file:
 		coordinates = world_to_window_coordinates_transform(display_file[obj].coordinates)
 		display_file[obj].setNormalizedCoordinates(coordinates)
-		# coordinates = np.array(display_file[obj].normalizedCoordinates).dot(rotate_matrix)
-		# display_file[obj].setNormalizedCoordinates(coordinates)
 
 def set_window_original_size():
 	global window
@@ -235,6 +233,10 @@ def get_viewport() -> dict:
 def get_display_file() -> list:
 	global display_file
 	return list(display_file.values())
+
+def get_canvas_normalized_coordinates() -> list:
+	global canvas
+	return canvas
 
 
 

@@ -32,13 +32,19 @@ def cgi_init() -> None:
 
     window_widget.show_all()
 
+    drawn_canvas()
+
     # Hides object change options (only showed when an object is selected)
     change_obj_options.hide()
 
     Gtk.main()
 
-def drawn_object(obj_name: str, is_point: bool, line_color: list) -> None:
-    coordinates_on_viewport = viewport_transform(obj_name)
+def drawn_canvas() -> None:
+    canvas_normalized_coordinates = get_canvas_normalized_coordinates()
+    drawn_object(canvas_normalized_coordinates, False, [0.7, 0.2, 0])
+
+def drawn_object(normalized_coordinates: list, is_point: bool, line_color: list) -> None:
+    coordinates_on_viewport = viewport_transform(normalized_coordinates)
 
     cr = cairo.Context(surface)
     cr.move_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
@@ -57,8 +63,9 @@ def drawn_object(obj_name: str, is_point: bool, line_color: list) -> None:
 
 def redraw_all_objects() -> None:
     clear_surface()
+    drawn_canvas()
     for obj in get_display_file():
-        drawn_object(obj.name, len(obj.coordinates) == 1, obj.line_color)
+        drawn_object(obj.normalizedCoordinates, len(obj.coordinates) == 1, obj.line_color)
 
 # Clear the surface, removing the scribbles
 def clear_surface() -> None:
@@ -134,7 +141,7 @@ def test() -> None:
     for obj in objs:
         object_list.append_text(obj.name + " (" + obj.type + ")")
         object_list.show_all()
-        drawn_object(obj.name, obj.isPoint, obj.line_color)
+        drawn_object(obj.normalizedCoordinates, obj.isPoint, obj.line_color)
 
 class Handler:
 
@@ -170,7 +177,7 @@ class Handler:
 
             object_list.append_text(newObj.name+" ("+newObj.type+")")
             object_list.show_all()
-            drawn_object(newObj.name, newObj.isPoint, rgb)
+            drawn_object(newObj.normalizedCoordinates, newObj.isPoint, rgb)
 
             dialog.destroy()
 
@@ -220,27 +227,6 @@ class Handler:
     def set_window_clicked(self, btn) -> None:
         set_window_original_size()
         redraw_all_objects()
-        # show_dialog('setWindowDialog.glade', 'dialog_set_window')
-
-    def confirm_set_window(self, btn) -> None:
-        window_coordinates_raw = gtkBuilder.get_object('window_coordinates_entry').get_text()
-
-        if window_coordinates_raw == "original":
-            set_window_original_size()
-            scale.set_text("100%")
-        else:
-            coordinates_list = window_coordinates_raw.split(',')
-
-            if len(coordinates_list) != 4:
-                return show_error("Insira todos os valores pedidos!", dialog)
-            else:
-                try:
-                    set_window(float(coordinates_list[0]), float(coordinates_list[1]), float(coordinates_list[2]), float(coordinates_list[3]))
-                except ValueError:
-                    return show_error("Coordenadas devem ser todas do tipo float", dialog)
-
-        redraw_all_objects()
-        dialog.destroy()
 
     def set_object_selected(self, user_data) -> None:
         global object_selected, objScale, objMove, objRotate, rotateAroundWorldCenter, rotateAroundPointCenter
