@@ -2,7 +2,10 @@ import cairo
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-from objectManager import *
+
+import objectManager
+import clipper
+import normalizer
 
 surface = None
 
@@ -40,11 +43,11 @@ def cgi_init() -> None:
     Gtk.main()
 
 def drawn_canvas() -> None:
-    canvas_normalized_coordinates = get_canvas_normalized_coordinates()
+    canvas_normalized_coordinates = clipper.get_canvas_normalized_coordinates()
     drawn_object(canvas_normalized_coordinates, False, [0.7, 0.2, 0])
 
 def drawn_object(normalized_coordinates: list, is_point: bool, line_color: list) -> None:
-    coordinates_on_viewport = viewport_transform(normalized_coordinates)
+    coordinates_on_viewport = objectManager.viewport_transform(normalized_coordinates)
 
     cr = cairo.Context(surface)
     cr.move_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
@@ -64,7 +67,8 @@ def drawn_object(normalized_coordinates: list, is_point: bool, line_color: list)
 def redraw_all_objects() -> None:
     clear_surface()
     drawn_canvas()
-    for obj in get_display_file():
+    for obj_name in objectManager.display_file:
+        obj = objectManager.display_file[obj_name]
         drawn_object(obj.normalizedCoordinates, len(obj.coordinates) == 1, obj.line_color)
 
 # Clear the surface, removing the scribbles
@@ -92,8 +96,8 @@ def configure_event_cb(wid, evt) -> None:
         width,
         height)
 
-    set_viewport(0, 0, width, height)
-    set_window(0, 0, width, height)
+    objectManager.set_viewport(0, 0, width, height)
+    objectManager.set_window(0, 0, width, height)
 
     clear_surface()
 
@@ -131,10 +135,10 @@ def show_dialog(file_name: str, window_id) -> None:
     dialog.show_all()
 
 def test() -> None:
-    obj1 = create_new_object(name='Amr', coordinates='10,10;110,30', line_color=[0.9, 0.9, 0.007])
-    obj2 = create_new_object(name='Verm', coordinates='56,65;150,172;80,210', line_color=[0.7, 0.2, 0])
-    obj3 = create_new_object(name='Verd', coordinates='50,200;70,210;90,300', line_color=[0.1, 0.8, 0])
-    obj4 = create_new_object(name='Az', coordinates='80,150;160,320;300,300', line_color=[0.3, 0.4, 0.6])
+    obj1 = objectManager.create_new_object(name='Amr', coordinates='10,10;110,30', line_color=[0.9, 0.9, 0.007])
+    obj2 = objectManager.create_new_object(name='Verm', coordinates='56,65;150,172;80,210', line_color=[0.7, 0.2, 0])
+    obj3 = objectManager.create_new_object(name='Verd', coordinates='50,200;70,210;90,300', line_color=[0.1, 0.8, 0])
+    obj4 = objectManager.create_new_object(name='Az', coordinates='80,150;160,320;300,300', line_color=[0.3, 0.4, 0.6])
 
     objs = [obj1, obj2, obj3, obj4]
 
@@ -153,7 +157,7 @@ class Handler:
         newObj_coordinates_raw = gtkBuilder.get_object('object_coordinates_entry').get_text()
         newObj_name = gtkBuilder.get_object('newObj_name_entry').get_text()
 
-        if newObj_name in display_file:
+        if newObj_name in objectManager.display_file:
             show_error("Nome já definido, escolha outro nome.", dialog)
         else:
             newObj = None
@@ -171,7 +175,7 @@ class Handler:
                 rgb = [0.9, 0.9, 0.007]
 
             try:
-                newObj = create_new_object(newObj_name, newObj_coordinates_raw, rgb)
+                newObj = objectManager.create_new_object(newObj_name, newObj_coordinates_raw, rgb)
             except ValueError as e:
                 return show_error(str(e), dialog)
 
@@ -192,7 +196,7 @@ class Handler:
 
     def window_zoomIn_clicked(self,btn) -> None:
         scale.set_text(str(float(scale.get_text().replace('%', '')) + ((1 - zoom_scale) * 100))+'%')
-        zoom_window(1/zoom_scale)
+        normalizer.zoom_window(1/zoom_scale)
         redraw_all_objects()
 
     def window_zoomOut_clicked(self,btn) -> None:
@@ -200,32 +204,32 @@ class Handler:
             return show_error("Escala não pode ser menor que 40%", window_widget)
 
         scale.set_text(str(float(scale.get_text().replace('%', '')) - ((1 - zoom_scale) * 100))+'%')
-        zoom_window(zoom_scale)
+        normalizer.zoom_window(zoom_scale)
         redraw_all_objects()
 
     def window_moveUp_clicked(self,btn) -> None:
-        move_window(0, -move_step)
+        normalizer.move_window(0, -move_step)
         redraw_all_objects()
 
     def window_moveDown_clicked(self,btn) -> None:
-        move_window(0, move_step)
+        normalizer.move_window(0, move_step)
         redraw_all_objects()
 
     def window_moveRight_clicked(self,btn) -> None:
-        move_window(-move_step, 0)
+        normalizer.move_window(-move_step, 0)
         redraw_all_objects()
 
     def window_moveLeft_clicked(self,btn) -> None:
-        move_window(move_step, 0)
+        normalizer.move_window(move_step, 0)
         redraw_all_objects()
 
     def window_rotate_clicked(sel, btn) -> None:
         rotate_angle = float(gtkBuilder.get_object('window_rotation_rate_entry').get_text())
-        rotate_window(rotate_angle)
+        normalizer.rotate_window(rotate_angle)
         redraw_all_objects()
 
     def set_window_clicked(self, btn) -> None:
-        set_window_original_size()
+        normalizer.set_window_original_size()
         redraw_all_objects()
 
     def set_object_selected(self, user_data) -> None:
@@ -298,7 +302,7 @@ class Handler:
             except ValueError:
                 return show_error("Angulo de rotação deve ser float", window_widget)
 
-        change_object(object_selected, move_vector, scale_factors, rotate_rate, rotateAroundWorldCenter, rotateAroundPointCenter, point_of_rotation)
+        objectManager.change_object(object_selected, move_vector, scale_factors, rotate_rate, rotateAroundWorldCenter, rotateAroundPointCenter, point_of_rotation)
         redraw_all_objects()
 
     def toggle_object_scale(self, btn) -> None:

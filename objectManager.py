@@ -1,9 +1,12 @@
 from object import Object
 from functools import reduce
+
+import normalizer
+import clipper
 import numpy as np
 import math
 
-#2D Window and Viewport starts with 0 as all coordinates default values.
+# 2D Window and Viewport starts with 0 as all coordinates default values.
 window = {
 	"xWinMin": 0.0,
 	"yWinMin": 0.0,
@@ -23,8 +26,6 @@ viewport = {
 	"xDif": 0.0,
 	"yDif": 0.0
 }
-
-canvas = [[-0.90, -0.90], [0.90, -0.90], [0.90, 0.90], [-0.90, 0.90]]
 
 # List of objects.
 display_file: dict = {}
@@ -54,10 +55,10 @@ def create_new_object(name: str, coordinates: str, line_color: list) -> Object:
 			raise ValueError("Coordenadas devem ser duplas ou triplas")
 
 	new_object = Object(name, coordinates_matrix, line_color)
-	normalized_coordinates = world_to_window_coordinates_transform(coordinates_matrix)
-	new_object.setNormalizedCoordinates(normalized_coordinates)
-
 	display_file[name] = new_object
+
+	normalized_coordinates = normalizer.world_to_window_coordinates_transform(coordinates_matrix)
+	clipper.clipObject(name, normalized_coordinates)
 
 	# For debug purpose
 	print("Objeto "+"\""+new_object.name+"\" ("+new_object.type+") criado nas seguintes coordenadas = "+str(new_object.coordinates)+".\nDisplay File com "+str(len(display_file))+" objeto(s)")
@@ -105,36 +106,10 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 		coordinates_aux.append(x_aux)
 
 	new_coordinates = np.array(coordinates_aux).dot(transformation_matrix).tolist()
-	normalized_coordinates = world_to_window_coordinates_transform(new_coordinates)
-
 	display_file[name].set_coordinates(new_coordinates)
-	display_file[name].setNormalizedCoordinates(normalized_coordinates)
 
-def world_to_window_coordinates_transform(world_coordinates: list) -> list:
-	global window
-	x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
-	y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
-
-	new_coordinates = []
-	for cord in world_coordinates:
-		cord_aux = cord[0:2]
-		cord_aux.append(1)
-		new_coordinates.append(cord_aux)
-
-	move_vector = [-x_wc, -y_wc]
-	move_matrix = np.array([[1, 0, 0], [0, 1, 0], [move_vector[0], move_vector[1], 1]])
-	new_coordinates = np.array(new_coordinates).dot(move_matrix)
-
-	v_up_angle = -window["vUpAngle"]
-	rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0], [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
-	new_coordinates = new_coordinates.dot(rotate_matrix)
-
-	sx = 1 / (window["xWinMax"] - window["xWinMin"])
-	sy = 1 / (window["yWinMax"] - window["yWinMin"])
-	scale_matrix = np.array([[sx, 0, 0], [0, sy, 0], [0, 0, 1]])
-
-	new_coordinates = new_coordinates.dot(scale_matrix)
-	return new_coordinates.dot(window["transformations"]).tolist()
+	normalized_coordinates = normalizer.world_to_window_coordinates_transform(new_coordinates)
+	clipper.clipObject(name, normalized_coordinates)
 
 def viewport_transform(normalized_coordinates: list) -> list:
 	global display_file, viewport
@@ -160,49 +135,9 @@ def viewport_transform(normalized_coordinates: list) -> list:
 
 	return coordinates_on_viewport
 
-def zoom_window(scale: float) -> None:
-	global display_file, window
-	scale_matrix = np.array([[scale, 0, 0], [0, scale, 0], [0, 0, 1]])
-	window["transformations"] = window["transformations"].dot(scale_matrix)
-
-	for obj in display_file:
-		coordinates = np.array(display_file[obj].normalizedCoordinates).dot(scale_matrix)
-		display_file[obj].setNormalizedCoordinates(coordinates.tolist())
-
-def move_window(step_x: float, step_y: float) -> None:
-	global display_file, window
-	move_matrix = np.array([[1, 0, 0], [0, 1, 0], [step_x, step_y, 1]])
-	window["transformations"] = window["transformations"].dot(move_matrix)
-
-	for obj in display_file:
-		coordinates = np.array(display_file[obj].normalizedCoordinates).dot(move_matrix)
-		display_file[obj].setNormalizedCoordinates(coordinates.tolist())
-
-# Problema -> Roda -> Move Objeto Ou da Zoom -> Roda Dnvo -> Move objeto ou da zoom (objeto sai da posicao desejada)
-def rotate_window(rotate_angle: float) -> None:
-	global display_file, window
-	window_v_up_angle = window["vUpAngle"]
-
-	window_v_up_angle -= rotate_angle
-	if window_v_up_angle <= -360:
-		window_v_up_angle += 360
-	elif window_v_up_angle >= 360:
-		window_v_up_angle -= 360
-
-	window["vUpAngle"] = window_v_up_angle
-
-	for obj in display_file:
-		coordinates = world_to_window_coordinates_transform(display_file[obj].coordinates)
-		display_file[obj].setNormalizedCoordinates(coordinates)
-
-def set_window_original_size():
+def get_window() -> dict:
 	global window
-	window["vUpAngle"] = 0.0
-	window["transformations"] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-
-	for obj in display_file:
-		coordinates = world_to_window_coordinates_transform(display_file[obj].coordinates)
-		display_file[obj].setNormalizedCoordinates(coordinates)
+	return window
 
 def set_window(x_win_min: float, y_win_min: float, x_win_max: float, y_win_max: float) -> None:
 	global window
@@ -213,6 +148,16 @@ def set_window(x_win_min: float, y_win_min: float, x_win_max: float, y_win_max: 
 	window["xDif"] = x_win_max - x_win_min
 	window["yDif"] = y_win_max - y_win_min
 
+def set_window_transformations(transformations) -> None:
+	window["transformations"] = transformations
+
+def set_window_vUpAngle(vup_angle: float) -> None:
+	window["vUpAngle"] = vup_angle
+
+def get_viewport() -> dict:
+	global viewport
+	return viewport
+
 def set_viewport(x_vp_min: float, y_vp_min: float, x_vp_max: float, y_vp_max: float) -> None:
 	global viewport
 	viewport["xVpMin"] = x_vp_min
@@ -221,22 +166,6 @@ def set_viewport(x_vp_min: float, y_vp_min: float, x_vp_max: float, y_vp_max: fl
 	viewport["yVpMax"] = y_vp_max
 	viewport["xDif"] = x_vp_max - x_vp_min
 	viewport["yDif"] = y_vp_max - y_vp_min
-
-def get_window() -> dict:
-	global window
-	return window
-
-def get_viewport() -> dict:
-	global viewport
-	return viewport
-
-def get_display_file() -> list:
-	global display_file
-	return list(display_file.values())
-
-def get_canvas_normalized_coordinates() -> list:
-	global canvas
-	return canvas
 
 
 
