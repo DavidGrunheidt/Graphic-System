@@ -135,10 +135,6 @@ def viewport_transform(normalized_coordinates: list) -> list:
 
 	return coordinates_on_viewport
 
-def get_window() -> dict:
-	global window
-	return window
-
 def set_window(x_win_min: float, y_win_min: float, x_win_max: float, y_win_max: float) -> None:
 	global window
 	window["xWinMin"] = x_win_min
@@ -147,16 +143,6 @@ def set_window(x_win_min: float, y_win_min: float, x_win_max: float, y_win_max: 
 	window["yWinMax"] = y_win_max
 	window["xDif"] = x_win_max - x_win_min
 	window["yDif"] = y_win_max - y_win_min
-
-def set_window_transformations(transformations) -> None:
-	window["transformations"] = transformations
-
-def set_window_vUpAngle(vup_angle: float) -> None:
-	window["vUpAngle"] = vup_angle
-
-def get_viewport() -> dict:
-	global viewport
-	return viewport
 
 def set_viewport(x_vp_min: float, y_vp_min: float, x_vp_max: float, y_vp_max: float) -> None:
 	global viewport

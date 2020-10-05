@@ -3,6 +3,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+import object
 import objectManager
 import clipper
 import normalizer
@@ -43,24 +44,43 @@ def cgi_init() -> None:
     Gtk.main()
 
 def drawn_canvas() -> None:
-    canvas_normalized_coordinates = clipper.get_canvas_normalized_coordinates()
-    drawn_object(canvas_normalized_coordinates, False, [0.7, 0.2, 0])
+    canvas_normalized_coordinates = clipper.canvas
+    canvas_obj = object.Object('___canvas', list(), [0.7, 0.2, 0])
+    canvas_obj.setToDrawnCoordinates(canvas_normalized_coordinates)
+    canvas_obj.setOnBorderList([-1, -1, -1, -1])
+    drawn_object(canvas_obj)
 
-def drawn_object(normalized_coordinates: list, is_point: bool, line_color: list) -> None:
-    coordinates_on_viewport = objectManager.viewport_transform(normalized_coordinates)
+def drawn_object(obj: object.Object) -> None:
+    if not obj.toDrawnCoordinates:
+        return
+
+    coordinates_on_viewport = objectManager.viewport_transform(obj.toDrawnCoordinates)
 
     cr = cairo.Context(surface)
     cr.move_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
 
-    if is_point:
+    if obj.isPoint:
         cr.line_to(coordinates_on_viewport[0][0]+1, coordinates_on_viewport[0][1]+1)
     else:
-        for coordinates in coordinates_on_viewport[1:len(coordinates_on_viewport)]:
-            cr.line_to(coordinates[0], coordinates[1])
-        # cr.line_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
-        cr.close_path() # Se não puder usar esse usa o de cima pra fechar o poligono.
+        previous_on_border = 0
+        for index in range(len(coordinates_on_viewport)):
+            coord = coordinates_on_viewport[index]
 
-    cr.set_source_rgb(line_color[0], line_color[1], line_color[2])
+            if previous_on_border in clipper.on_border_enum and obj.onBorderList[index] in clipper.on_border_enum:
+                if previous_on_border == obj.onBorderList[index]:
+                    cr.move_to(coord[0], coord[1])
+                else:
+                    cr.line_to(coord[0], coord[1])
+                previous_on_border = obj.onBorderList[index]
+            else:
+                cr.line_to(coord[0], coord[1])
+                previous_on_border = obj.onBorderList[index]
+
+        if obj.name == '___canvas':
+            clipper.canvas_viewport_coords = coordinates_on_viewport
+            cr.close_path()  # Ou -> cr.line_to(coordinates_on_viewport[0][0], coordinates_on_viewport[0][1])
+
+    cr.set_source_rgb(obj.line_color[0], obj.line_color[1], obj.line_color[2])
     cr.stroke()
     window_widget.queue_draw()
 
@@ -69,7 +89,7 @@ def redraw_all_objects() -> None:
     drawn_canvas()
     for obj_name in objectManager.display_file:
         obj = objectManager.display_file[obj_name]
-        drawn_object(obj.normalizedCoordinates, len(obj.coordinates) == 1, obj.line_color)
+        drawn_object(obj)
 
 # Clear the surface, removing the scribbles
 def clear_surface() -> None:
@@ -145,7 +165,7 @@ def test() -> None:
     for obj in objs:
         object_list.append_text(obj.name + " (" + obj.type + ")")
         object_list.show_all()
-        drawn_object(obj.normalizedCoordinates, obj.isPoint, obj.line_color)
+        drawn_object(obj)
 
 class Handler:
 
@@ -181,7 +201,7 @@ class Handler:
 
             object_list.append_text(newObj.name+" ("+newObj.type+")")
             object_list.show_all()
-            drawn_object(newObj.normalizedCoordinates, newObj.isPoint, rgb)
+            drawn_object(newObj)
 
             dialog.destroy()
 

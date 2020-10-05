@@ -12,13 +12,17 @@ class Object:
 		self.line_color = line_color
 
 		self.normalizedCoordinates = list()
-
-		self.isClipped = False
 		self.toDrawnCoordinates = list()
+		self.onBorderList = list()
 
 	def set_coordinates(self, new_coordinates: list) -> None:
 		self.coordinates = new_coordinates
 
-	def setNormalizedCoordinates(self, new_coordinates: list) -> None:
-		self.normalizedCoordinates = new_coordinates
+	def setNormalizedCoordinates(self, normalized_coordinates: list) -> None:
+		self.normalizedCoordinates = normalized_coordinates
 
+	def setToDrawnCoordinates(self, to_draw_coordinates: list) -> None:
+		self.toDrawnCoordinates = to_draw_coordinates
+
+	def setOnBorderList(self, on_border_list: list) -> None:
+		self.onBorderList = on_border_list
