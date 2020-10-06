@@ -14,6 +14,7 @@ class Object:
 		self.normalizedCoordinates = list()
 		self.toDrawnCoordinates = list()
 		self.onBorderList = list()
+		self.onLineList = list()
 
 	def set_coordinates(self, new_coordinates: list) -> None:
 		self.coordinates = new_coordinates
@@ -26,3 +27,6 @@ class Object:
 
 	def setOnBorderList(self, on_border_list: list) -> None:
 		self.onBorderList = on_border_list
+
+	def setOnLineList(self, on_line_list: list) -> None:
+		self.onLineList = on_line_list

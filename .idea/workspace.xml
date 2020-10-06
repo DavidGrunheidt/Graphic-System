@@ -23,7 +23,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clipper.py" beforeDir="false" afterPath="$PROJECT_DIR$/clipper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/object.py" beforeDir="false" afterPath="$PROJECT_DIR$/object.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/objectManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/objectManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screenManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/screenManager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -94,7 +93,10 @@
       <workItem from="1601568385349" duration="281000" />
       <workItem from="1601586449386" duration="7223000" />
       <workItem from="1601644475411" duration="565000" />
-      <workItem from="1601835203969" duration="15518000" />
+      <workItem from="1601835203969" duration="15974000" />
+      <workItem from="1601898006279" duration="7169000" />
+      <workItem from="1601941442001" duration="17000" />
+      <workItem from="1601987465855" duration="7617000" />
     </task>
     <servers />
   </component>

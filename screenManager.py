@@ -48,6 +48,7 @@ def drawn_canvas() -> None:
     canvas_obj = object.Object('___canvas', list(), [0.7, 0.2, 0])
     canvas_obj.setToDrawnCoordinates(canvas_normalized_coordinates)
     canvas_obj.setOnBorderList([-1, -1, -1, -1])
+    canvas_obj.setOnLineList([[0, 1], [0, 1], [1, 2], [1, 2], [2, 3], [2, 3], [3, 0], [3, 0]])
     drawn_object(canvas_obj)
 
 def drawn_object(obj: object.Object) -> None:
@@ -62,19 +63,34 @@ def drawn_object(obj: object.Object) -> None:
     if obj.isPoint:
         cr.line_to(coordinates_on_viewport[0][0]+1, coordinates_on_viewport[0][1]+1)
     else:
-        previous_on_border = 0
+        previous_on_border = obj.onBorderList[0]
+        last = obj.onLineList[0]
         for index in range(len(coordinates_on_viewport)):
             coord = coordinates_on_viewport[index]
 
-            if previous_on_border in clipper.on_border_enum and obj.onBorderList[index] in clipper.on_border_enum:
-                if previous_on_border == obj.onBorderList[index]:
-                    cr.move_to(coord[0], coord[1])
-                else:
-                    cr.line_to(coord[0], coord[1])
-                previous_on_border = obj.onBorderList[index]
+            if index == 0:
+                cr.move_to(coord[0], coord[1])
             else:
-                cr.line_to(coord[0], coord[1])
-                previous_on_border = obj.onBorderList[index]
+                test_list = obj.onLineList[index]
+
+                # Os pontos pertencem a mesma reta ? (Quando clipa pode ter 2 pontos adjacentes na lista que não pertencem a mesma reta.
+                # Se não pertencem, não trace uma reta entre eles.
+                if test_list == last or test_list[0] == last[1]:
+                    # Os pontos pertencem a mesma reta mas estão sobre uma mesma borda?
+                    # Se sim, não trace uma reta, se não ela ficaria em cima da borda.
+                    if previous_on_border in clipper.on_border_enum and obj.onBorderList[index] in clipper.on_border_enum:
+                        if previous_on_border == obj.onBorderList[index]:
+                            cr.move_to(coord[0], coord[1])
+                        else:
+                            cr.line_to(coord[0], coord[1])
+                        previous_on_border = obj.onBorderList[index]
+                    else:
+                        cr.line_to(coord[0], coord[1])
+                        previous_on_border = obj.onBorderList[index]
+                else:
+                    cr.move_to(coord[0], coord[1])
+
+                last = test_list
 
         if obj.name == '___canvas':
             clipper.canvas_viewport_coords = coordinates_on_viewport
