@@ -2,5 +2,4 @@ Para rodar a aplicação -> Abra o terminal e navegue até a pasta raiz da aplic
 
 Execute os seguintes comandos:
 
-chmod +x run.sh
-sudo ./run.sh
+python3 main.py
