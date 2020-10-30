@@ -30,7 +30,7 @@ viewport = {
 # List of objects.
 display_file: dict = {}
 
-def create_new_object(name: str, coordinates: str, line_color: list) -> Object:
+def create_new_object(name: str, coordinates: str, line_color: list, is_bezier: bool, is_bspline: bool) -> Object:
 	global display_file, window
 	coordinates_matrix = []
 	index_row = 0
@@ -54,10 +54,10 @@ def create_new_object(name: str, coordinates: str, line_color: list) -> Object:
 		else:
 			raise ValueError("Coordenadas devem ser duplas ou triplas")
 
-	new_object = Object(name, coordinates_matrix, line_color)
+	new_object = Object(name, coordinates_matrix, line_color, is_bezier, is_bspline)
 	display_file[name] = new_object
 
-	normalized_coordinates = normalizer.world_to_window_coordinates_transform(coordinates_matrix)
+	normalized_coordinates = normalizer.world_to_window_coordinates_transform(display_file[name])
 	clipper.clipObject(name, normalized_coordinates)
 
 	# For debug purpose
@@ -108,7 +108,7 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 	new_coordinates = np.array(coordinates_aux).dot(transformation_matrix).tolist()
 	display_file[name].set_coordinates(new_coordinates)
 
-	normalized_coordinates = normalizer.world_to_window_coordinates_transform(new_coordinates)
+	normalized_coordinates = normalizer.world_to_window_coordinates_transform(display_file[name])
 	clipper.clipObject(name, normalized_coordinates)
 
 def viewport_transform(normalized_coordinates: list) -> list:

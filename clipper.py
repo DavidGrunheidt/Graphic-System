@@ -23,8 +23,10 @@ def clipObject(obj_name: str, normalized_coordinates: list) -> None:
     on_border_list = list()
     on_line_list = list()
 
-    # Test each line to see if it's totally, partially or not inside the window.
-    for index in range(len(normalized_coordinates)):
+    looprange = range(len(normalized_coordinates))
+    if objectManager.display_file[obj_name].is_bezier:
+        looprange = looprange[:len(looprange)-1]
+    for index in looprange:
         index0 = index
         index1 = index + 1
 

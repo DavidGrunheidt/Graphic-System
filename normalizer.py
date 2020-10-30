@@ -2,14 +2,15 @@ import objectManager
 import clipper
 import numpy as np
 import math
+from object import Object
 
-def world_to_window_coordinates_transform(world_coordinates: list) -> list:
+def world_to_window_coordinates_transform(my_object: Object) -> list:
     window = objectManager.window
     x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
     y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
 
     new_coordinates = []
-    for cord in world_coordinates:
+    for cord in my_object.coordinates:
         cord_aux = cord[0:2]
         cord_aux.append(1)
         new_coordinates.append(cord_aux)
@@ -27,8 +28,13 @@ def world_to_window_coordinates_transform(world_coordinates: list) -> list:
     sy = 1 / (window["yWinMax"] - window["yWinMin"])
     scale_matrix = np.array([[sx, 0, 0], [0, sy, 0], [0, 0, 1]])
 
-    new_coordinates = new_coordinates.dot(scale_matrix)
-    return new_coordinates.dot(window["transformations"]).tolist()
+    new_coordinates = new_coordinates.dot(scale_matrix).dot(window["transformations"])
+
+    if my_object.is_bezier:
+        n_passos = 60
+        return [bezier_aux(t, new_coordinates) for t in np.linspace(0, 1, num=n_passos)]
+    else:
+        return new_coordinates.tolist()
 
 def zoom_window(scale: float) -> None:
     window = objectManager.window
@@ -67,7 +73,7 @@ def rotate_window(rotate_angle: float) -> None:
     window["vUpAngle"] = window_v_up_angle
 
     for obj in display_file:
-        normalized_coordinates = world_to_window_coordinates_transform(display_file[obj].coordinates)
+        normalized_coordinates = world_to_window_coordinates_transform(display_file[obj])
         clipper.clipObject(obj, normalized_coordinates)
 
 def set_window_original_size():
@@ -78,5 +84,9 @@ def set_window_original_size():
     window["transformations"] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
 
     for obj in display_file:
-        normalized_coordinates = world_to_window_coordinates_transform(display_file[obj].coordinates)
+        normalized_coordinates = world_to_window_coordinates_transform(display_file[obj])
         clipper.clipObject(obj, normalized_coordinates)
+
+def bezier_aux(t, p) -> list:
+    blend_func = np.array([(1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t ** 2, t ** 3])
+    return blend_func.dot(p)
