@@ -32,7 +32,11 @@ def world_to_window_coordinates_transform(my_object: Object) -> list:
 
     if my_object.is_bezier:
         n_passos = 60
+        # print('\n\n' + str([bezier_aux(t, new_coordinates) for t in np.linspace(0, 1, num=n_passos)]))
         return [bezier_aux(t, new_coordinates) for t in np.linspace(0, 1, num=n_passos)]
+    elif my_object.is_bspline:
+        n_passos = 60
+        return bspline_aux(new_coordinates, n_passos)
     else:
         return new_coordinates.tolist()
 
@@ -87,6 +91,44 @@ def set_window_original_size():
         normalized_coordinates = world_to_window_coordinates_transform(display_file[obj])
         clipper.clipObject(obj, normalized_coordinates)
 
-def bezier_aux(t, p) -> list:
+def bezier_aux(t, coordinates) -> list:
     blend_func = np.array([(1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t ** 2, t ** 3])
-    return blend_func.dot(p)
+    return blend_func.dot(coordinates)
+
+def bspline_aux(coordinates, passos):
+    delta = 1 / passos
+
+    E = np.array([[0, 0, 0, 1], [delta ** 3, delta ** 2, delta, 0], [6 * delta ** 3, 2 * delta ** 2, 0, 0], [6 * delta ** 3, 0, 0, 0]])
+
+    new_coords = []
+
+    for index in range(0, len(coordinates) - 3):
+        calculated_coords = forward_differences(coordinates[index:index + 4], passos, E)
+        new_coords += calculated_coords
+
+    return new_coords
+
+def forward_differences(coordinates, passos, E):
+    bspline_matrix = np.array([[-1, 3, -3, 1], [3, -6, 3, 0], [-3, 0, 3, 0], [1, 4, 1, 0], ]) / 6
+
+    coord_aux_x = bspline_matrix.dot([coord[0] for coord in coordinates])
+    coord_aux_y = bspline_matrix.dot([coord[1] for coord in coordinates])
+
+    fx = E.dot(coord_aux_x)
+    fy = E.dot(coord_aux_y)
+
+    new_coords = [[fx[0], fy[0], 1]]
+
+    for _ in range(1, passos + 1):
+        for k in range(len(fx) - 1):
+            fx[k] += fx[k + 1]
+            fy[k] += fy[k + 1]
+
+        new_coords.append([fx[0], fy[0], 1])
+
+    return new_coords
+
+
+
+
+

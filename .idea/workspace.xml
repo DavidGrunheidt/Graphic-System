@@ -23,8 +23,6 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/clipper.py" beforeDir="false" afterPath="$PROJECT_DIR$/clipper.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/normalizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/normalizer.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/object.py" beforeDir="false" afterPath="$PROJECT_DIR$/object.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/objectManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/objectManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screenManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/screenManager.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -103,6 +101,8 @@
       <workItem from="1603111367074" duration="489000" />
       <workItem from="1603158683024" duration="83000" />
       <workItem from="1604090594839" duration="5687000" />
+      <workItem from="1604149994500" duration="5448000" />
+      <workItem from="1604155574168" duration="632000" />
     </task>
     <servers />
   </component>
@@ -134,17 +134,17 @@
       <screen x="0" y="23" width="1920" height="988" />
     </state>
     <state x="469" y="156" key="SettingsEditor/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1599943274297" />
-    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1604095915607">
+    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1604152265923">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604095915607" />
-    <state x="668" y="256" width="584" height="582" key="find.popup" timestamp="1604096125885">
+    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604152265923" />
+    <state x="668" y="256" width="584" height="582" key="find.popup" timestamp="1604153846523">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="668" y="256" width="584" height="582" key="find.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604096125885" />
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1601854757719">
+    <state x="668" y="256" width="584" height="582" key="find.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604153846523" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1604152197448">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1601854757719" />
+    <state x="625" y="241" width="670" height="676" key="search.everywhere.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604152197448" />
   </component>
 </project>

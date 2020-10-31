@@ -173,11 +173,12 @@ def show_dialog(file_name: str, window_id) -> None:
 def test() -> None:
     obj1 = objectManager.create_new_object(name='Amr', coordinates='60,100;200,200', line_color=[0.9, 0.9, 0.007], is_bezier=False, is_bspline=False)
     obj2 = objectManager.create_new_object(name='Verm', coordinates='80,150;160,320;300,300', line_color=[0.7, 0.2, 0], is_bezier=False, is_bspline=False)
-    obj3 = objectManager.create_new_object(name='Verd', coordinates='50,200;70,210;90,300;120,150', line_color=[0.1, 0.8, 0], is_bezier=True, is_bspline=False)
+    obj3 = objectManager.create_new_object(name='Verd', coordinates='50,250;70,260;90,350;120,200', line_color=[0.1, 0.8, 0], is_bezier=True, is_bspline=False)
     obj4 = objectManager.create_new_object(name='Verd2', coordinates='13,150;23,280;300,72;320,152', line_color=[0.1, 0.8, 0], is_bezier=True, is_bspline=False)
-    # obj5 = objectManager.create_new_object(name='Az', coordinates='80,150;160,320;300,300', line_color=[0.3, 0.4, 0.6])
+    obj5 = objectManager.create_new_object(name='Az', coordinates='20,130;60,210;120,80;170,340;250,130;300,160;320,250;380,100', line_color=[0.3, 0.4, 0.6], is_bezier=False, is_bspline=True)
+    obj6 = objectManager.create_new_object(name='Az2', coordinates='0,100;50,300;180,300;250,0;350,200;450,100;500,400', line_color=[0.3, 0.4, 0.6], is_bezier=False, is_bspline=True)
 
-    objs = [obj1, obj2, obj3, obj4]
+    objs = [obj1, obj2, obj3, obj4, obj5, obj6]
 
     for obj in objs:
         object_list.append_text(obj.name + " (" + obj.type + ")")
@@ -211,8 +212,16 @@ class Handler:
             elif (line_color_str == "Amarelo"):
                 rgb = [0.9, 0.9, 0.007]
 
+            tipo_object = gtkBuilder.get_object('combo_box_tipo_selected').get_active_text()
+            is_bezier = False
+            is_bspline = False
+            if tipo_object == 'Curva Bezier':
+                is_bezier = True
+            elif tipo_object == 'Curva BSpline':
+                is_bspline = True
+
             try:
-                newObj = objectManager.create_new_object(newObj_name, newObj_coordinates_raw, rgb, False, False)
+                newObj = objectManager.create_new_object(newObj_name, newObj_coordinates_raw, rgb, is_bezier, is_bspline)
             except ValueError as e:
                 return show_error(str(e), dialog)
 
@@ -297,7 +306,7 @@ class Handler:
             change_obj_options.hide()
             return
 
-        object_selected = object_list.get_active_text().replace("(Ponto)", "").replace("(Linha)", "").replace("(Wireframe)", "").replace(" ", "").replace("(Bezier)", "").replace("(BSpline", "")
+        object_selected = object_list.get_active_text().replace("(Ponto)", "").replace("(Linha)", "").replace("(Wireframe)", "").replace(" ", "").replace("(Bezier)", "").replace("(BSpline)", "")
 
         change_obj_options.show_all()
 

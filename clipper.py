@@ -24,7 +24,7 @@ def clipObject(obj_name: str, normalized_coordinates: list) -> None:
     on_line_list = list()
 
     looprange = range(len(normalized_coordinates))
-    if objectManager.display_file[obj_name].is_bezier:
+    if objectManager.display_file[obj_name].is_bezier or objectManager.display_file[obj_name].is_bspline:
         looprange = looprange[:len(looprange)-1]
     for index in looprange:
         index0 = index
