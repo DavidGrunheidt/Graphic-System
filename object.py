@@ -1,5 +1,5 @@
 class Object:
-	def __init__(self, name: str, coordinates: list, line_color: list, is_bezier: bool, is_bspline: bool):
+	def __init__(self, name: str, coordinates: list, line_color: list, is_bezier: bool, is_bspline: bool, is_3d: bool):
 		self.name = name
 
 		self.coordinates = coordinates
@@ -17,6 +17,8 @@ class Object:
 		elif self.is_bspline:
 			self.type = "BSpline"
 		self.line_color = line_color
+
+		self.is3D = is_3d
 
 		self.normalizedCoordinates = list()
 		self.toDrawnCoordinates = list()

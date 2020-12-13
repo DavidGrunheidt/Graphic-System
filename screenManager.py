@@ -46,7 +46,7 @@ def cgi_init() -> None:
 
 def drawn_canvas() -> None:
     canvas_normalized_coordinates = clipper.canvas
-    canvas_obj = object.Object('___canvas', list(), [0.7, 0.2, 0], False, False)
+    canvas_obj = object.Object('___canvas', list(), [0.7, 0.2, 0], False, False, False)
     canvas_obj.setToDrawnCoordinates(canvas_normalized_coordinates)
     canvas_obj.setOnBorderList([-1, -1, -1, -1])
     canvas_obj.setOnLineList([[0, 1], [0, 1], [1, 2], [1, 2], [2, 3], [2, 3], [3, 0], [3, 0]])
@@ -68,30 +68,35 @@ def drawn_object(obj: object.Object) -> None:
         last = obj.onLineList[0]
         for index in range(len(coordinates_on_viewport)):
             coord = coordinates_on_viewport[index]
-
-            if index == 0:
+            if obj.is3D:
                 cr.move_to(coord[0], coord[1])
+                cr.line_to(coord[0]+1, coord[1]+1)
             else:
-                test_list = obj.onLineList[index]
+                if index == 0:
+                    cr.move_to(coord[0], coord[1])
+                else:
+                    test_list = obj.onLineList[index]
 
-                # Os pontos pertencem a mesma reta ? (Quando clipa pode ter 2 pontos adjacentes na lista que não pertencem a mesma reta.
-                # Se não pertencem, não trace uma reta entre eles.
-                if test_list == last or test_list[0] == last[1]:
-                    # Os pontos pertencem a mesma reta mas estão sobre uma mesma borda?
-                    # Se sim, não trace uma reta, se não ela ficaria em cima da borda.
-                    if previous_on_border in clipper.on_border_enum and obj.onBorderList[index] in clipper.on_border_enum:
-                        if previous_on_border == obj.onBorderList[index]:
-                            cr.move_to(coord[0], coord[1])
+                    # Os pontos pertencem a mesma reta ? (Quando clipa pode ter 2 pontos adjacentes na lista que não pertencem a mesma reta.
+                    # Se não pertencem, não trace uma reta entre eles.
+                    if test_list == last or test_list[0] == last[1]:
+                        # Os pontos pertencem a mesma reta mas estão sobre uma mesma borda?
+                        # Se sim, não trace uma reta, se não ela ficaria em cima da borda.
+                        if previous_on_border in clipper.on_border_enum and obj.onBorderList[
+                            index] in clipper.on_border_enum:
+                            if previous_on_border == obj.onBorderList[index]:
+                                cr.move_to(coord[0], coord[1])
+                            else:
+                                cr.line_to(coord[0], coord[1])
+                            previous_on_border = obj.onBorderList[index]
                         else:
                             cr.line_to(coord[0], coord[1])
-                        previous_on_border = obj.onBorderList[index]
+                            previous_on_border = obj.onBorderList[index]
                     else:
-                        cr.line_to(coord[0], coord[1])
-                        previous_on_border = obj.onBorderList[index]
-                else:
-                    cr.move_to(coord[0], coord[1])
+                        cr.move_to(coord[0], coord[1])
 
-                last = test_list
+                    last = test_list
+
 
         if obj.name == '___canvas':
             clipper.canvas_viewport_coords = coordinates_on_viewport
@@ -291,9 +296,9 @@ class Handler:
 
         gtkBuilder.get_object('toggle_object_rotate').set_active(False)
         gtkBuilder.get_object('object_rotate_rate_entry').set_text("")
-        gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
-        gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
-        gtkBuilder.get_object('button_rotate_around_point_center').set_active(False)
+        gtkBuilder.get_object('button_rotate_around_x_axis').set_active(False)
+        gtkBuilder.get_object('button_rotate_around_y_axis').set_active(False)
+        gtkBuilder.get_object('button_rotate_around_z_axis').set_active(False)
         gtkBuilder.get_object('point_of_rotation_entry').set_text("")
         gtkBuilder.get_object('toggle_object_move').set_active(False)
         gtkBuilder.get_object('object_move_entry').set_text("")
@@ -367,59 +372,59 @@ class Handler:
         rotateIsActive = gtkBuilder.get_object('toggle_object_rotate').get_active()
         if (rotateIsActive):
             objRotate = True
-            gtkBuilder.get_object('button_rotate_around_world_center').show_all()
-            gtkBuilder.get_object('button_rotate_around_object_center').show_all()
-            gtkBuilder.get_object('button_rotate_around_point_center').show_all()
+            gtkBuilder.get_object('button_rotate_around_x_axis').show_all()
+            gtkBuilder.get_object('button_rotate_around_y_axis').show_all()
+            gtkBuilder.get_object('button_rotate_around_z_axis').show_all()
         else:
             objRotate = False
-            gtkBuilder.get_object('button_rotate_around_world_center').hide()
-            gtkBuilder.get_object('button_rotate_around_object_center').hide()
-            gtkBuilder.get_object('button_rotate_around_point_center').hide()
+            gtkBuilder.get_object('button_rotate_around_x_axis').hide()
+            gtkBuilder.get_object('button_rotate_around_y_axis').hide()
+            gtkBuilder.get_object('button_rotate_around_z_axis').hide()
             gtkBuilder.get_object('point_of_rotation_entry').hide()
 
-        gtkBuilder.get_object('button_rotate_around_object_center').set_active(True)
+        gtkBuilder.get_object('button_rotate_around_y_axis').set_active(True)
 
-    def toggle_rotate_around_world_center(self, btn) -> None:
+    def toggle_rotate_around_x_axis(self, btn) -> None:
         global rotate_around_x_axis, rotate_around_y_axis
 
-        if gtkBuilder.get_object('button_rotate_around_world_center').get_active():
+        if gtkBuilder.get_object('button_rotate_around_x_axis').get_active():
             rotate_around_x_axis = True
             rotate_around_y_axis = False
 
-            gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
-            gtkBuilder.get_object('button_rotate_around_point_center').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_y_axis').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_z_axis').set_active(False)
             gtkBuilder.get_object('point_of_rotation_entry').hide()
         else:
-            self.toggle_rotate_around_object_center(None)
+            self.toggle_rotate_around_y_axis(None)
 
-    def toggle_rotate_around_object_center(self, btn) -> None:
+    def toggle_rotate_around_y_axis(self, btn) -> None:
         global rotate_around_x_axis, rotate_around_y_axis
 
-        oneOtherSelected = gtkBuilder.get_object('button_rotate_around_world_center').get_active() or gtkBuilder.get_object('button_rotate_around_point_center').get_active()
-        thisOneSelected = gtkBuilder.get_object('button_rotate_around_object_center').get_active()
+        oneOtherSelected = gtkBuilder.get_object('button_rotate_around_x_axis').get_active() or gtkBuilder.get_object('button_rotate_around_z_axis').get_active()
+        thisOneSelected = gtkBuilder.get_object('button_rotate_around_y_axis').get_active()
 
         if (not oneOtherSelected) or thisOneSelected:
             rotate_around_x_axis = False
-            rotate_around_y_axis = False
+            rotate_around_y_axis = True
 
-            gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
-            gtkBuilder.get_object('button_rotate_around_point_center').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_x_axis').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_z_axis').set_active(False)
             gtkBuilder.get_object('point_of_rotation_entry').hide()
 
             if (not oneOtherSelected):
-                gtkBuilder.get_object('button_rotate_around_object_center').set_active(True)
+                gtkBuilder.get_object('button_rotate_around_y_axis').set_active(True)
 
-    def toggle_rotate_around_point_center(self, btn) -> None:
+    def toggle_rotate_around_z_axis(self, btn) -> None:
         global rotate_around_x_axis, rotate_around_y_axis
 
-        if gtkBuilder.get_object('button_rotate_around_point_center').get_active():
+        if gtkBuilder.get_object('button_rotate_around_z_axis').get_active():
             rotate_around_x_axis = False
-            rotate_around_y_axis = True
+            rotate_around_y_axis = False
 
-            gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
-            gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_x_axis').set_active(False)
+            gtkBuilder.get_object('button_rotate_around_y_axis').set_active(False)
         else:
-            self.toggle_rotate_around_object_center(None)
+            self.toggle_rotate_around_y_axis(None)
 
     def close_dialog(self, btn) -> None:
         dialog.destroy()

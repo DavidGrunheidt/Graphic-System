@@ -378,14 +378,14 @@ sobre este objeto:</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToggleButton" id="button_rotate_around_point_center">
-                                            <property name="label" translatable="yes">Ponto especifico</property>
+                                          <object class="GtkToggleButton" id="button_rotate_around_z_axis">
+                                            <property name="label" translatable="yes">Eixo Z</property>
                                             <property name="width_request">25</property>
                                             <property name="height_request">25</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="toggle_rotate_around_point_center" swapped="no"/>
+                                            <signal name="toggled" handler="toggle_rotate_around_z_axis" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">22</property>
@@ -393,14 +393,14 @@ sobre este objeto:</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToggleButton" id="button_rotate_around_object_center">
-                                            <property name="label" translatable="yes">Centro do objeto</property>
+                                          <object class="GtkToggleButton" id="button_rotate_around_y_axis">
+                                            <property name="label" translatable="yes">Eixo Y</property>
                                             <property name="width_request">25</property>
                                             <property name="height_request">25</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="toggle_rotate_around_object_center" swapped="no"/>
+                                            <signal name="toggled" handler="toggle_rotate_around_y_axis" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">21</property>
@@ -408,14 +408,14 @@ sobre este objeto:</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkToggleButton" id="button_rotate_around_world_center">
-                                            <property name="label" translatable="yes">Centro do mundo</property>
+                                          <object class="GtkToggleButton" id="button_rotate_around_x_axis">
+                                            <property name="label" translatable="yes">Eixo X</property>
                                             <property name="width_request">25</property>
                                             <property name="height_request">25</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <signal name="toggled" handler="toggle_rotate_around_world_center" swapped="no"/>
+                                            <signal name="toggled" handler="toggle_rotate_around_x_axis" swapped="no"/>
                                           </object>
                                           <packing>
                                             <property name="x">20</property>

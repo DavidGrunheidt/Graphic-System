@@ -33,7 +33,7 @@ viewport = {
 # List of objects.
 display_file: dict = {}
 
-def create_new_object(name: str, coordinates: str, line_color: list, is_bezier: bool, is_bspline: bool) -> Object:
+def create_new_object(name: str, coordinates: str, line_color: list, is_bezier: bool, is_bspline: bool, is_3d: bool = False) -> Object:
 	global display_file, window
 	coordinates_matrix = []
 	index_row = 0
@@ -52,7 +52,7 @@ def create_new_object(name: str, coordinates: str, line_color: list, is_bezier: 
 		else:
 			raise ValueError("Coordenadas devem ser triplas")
 
-	new_object = Object(name, coordinates_matrix, line_color, is_bezier, is_bspline)
+	new_object = Object(name, coordinates_matrix, line_color, is_bezier, is_bspline, is_3d)
 	display_file[name] = new_object
 
 	normalized_coordinates = normalizer.world_to_window_coordinates_transform(display_file[name])
