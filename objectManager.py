@@ -1,6 +1,6 @@
 from object import Object
 from functools import reduce
-from matrices import identity_matrix, identity_matrix_2d, translate_matrix, rotate_z_matrix, scale_matrix
+from matrices import identity_matrix, identity_matrix_2d, translate_matrix, rotate_x_matrix, rotate_y_matrix, rotate_z_matrix, scale_matrix
 
 import normalizer
 import clipper
@@ -63,50 +63,42 @@ def create_new_object(name: str, coordinates: str, line_color: list, is_bezier: 
 
 	return new_object
 
-def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate: float, rotate_x: bool, rotate_y: bool, pointOfRotation: 'list[float]') -> None:
+def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate: float, rotate_x: bool, rotate_y: bool) -> None:
 	global display_file, window
 	transformation_matrix = identity_matrix
 	coordinates = display_file[name].coordinates
 
 	cx = reduce(lambda x, y: x + y, [x[0] for x in coordinates])/len(coordinates)
 	cy = reduce(lambda x, y: x + y, [x[1] for x in coordinates])/len(coordinates)
+	cz = reduce(lambda x, y: x + y, [x[2] for x in coordinates])/len(coordinates)
 
 	# Obs: Matrix multiplication will be on the order Rotate Matrix * Move Matrix * Scale Matrix always.
 	if rotate_rate:
-		dx, dy = cx, cy
+		dx, dy, dz = cx, cy, cz
+
 		rotate_matrix = rotate_z_matrix(rotate_rate)
-
 		if rotate_x:
-			dx = (window["xWinMax"] - window["xWinMin"])/2
-			dy = (window["yWinMax"] - window["yWinMin"])/2
-
+			rotate_matrix = rotate_x_matrix(rotate_rate)
 		elif rotate_y:
-			dx = pointOfRotation[0]
-			dy = pointOfRotation[1]
+			rotate_matrix = rotate_y_matrix(rotate_rate)
 
-		transformation_matrix = (np.array([
-			[1, 0, 0], [0, 1, 0],
-			[-dx, -dy, 1]
-		]).dot(rotate_matrix)).dot(translate_matrix(dx, dy, 0))
+		transformation_matrix = translate_matrix(-dx, -dy, -dz).dot(rotate_matrix).dot(translate_matrix(dx, dy, dz))
 
 	if move_vector:
 		move_matrix = translate_matrix(move_vector[0], move_vector[1], 0)
 		transformation_matrix = transformation_matrix.dot(move_matrix)
 
 	if scale_factors:
-		origin_translate_matrix = translate_matrix(-cx, -cy, 0)
-		zoom_matrix = scale_matrix(scale_factors[0], scale_factors[1], 0)
-		back_translate_matrix = translate_matrix(cx, cy, 0)
+		origin_translate_matrix = translate_matrix(-cx, -cy, -cz)
+		zoom_matrix = scale_matrix(scale_factors[0], scale_factors[1], 1)
+		back_translate_matrix = translate_matrix(cx, cy, cz)
 
 		transformation_matrix = transformation_matrix.dot(origin_translate_matrix).dot(zoom_matrix).dot(back_translate_matrix)
 
-	coordinates_aux = []
-	for x in coordinates:
-		x_aux = x[0:2]
-		x_aux.append(1)
-		coordinates_aux.append(x_aux)
-
+	coordinates_aux = [triple + [1] for triple in coordinates]
 	new_coordinates = np.array(coordinates_aux).dot(transformation_matrix).tolist()
+	new_coordinates = [quadruple[:len(quadruple) - 1] for quadruple in new_coordinates]
+
 	display_file[name].set_coordinates(new_coordinates)
 
 	normalized_coordinates = normalizer.world_to_window_coordinates_transform(display_file[name])

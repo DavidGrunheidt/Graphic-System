@@ -19,7 +19,7 @@ def translate_matrix(dx: float, dy: float, dz: float) -> np.ndarray:
         [1, 0, 0, 0],
         [0, 1, 0, 0],
         [0, 0, 1, 0],
-        [dx, dy, dz, 0],
+        [dx, dy, dz, 1],
     ])
 
 def translate_matrix_2d(dx: float, dy: float) -> np.ndarray:
@@ -72,11 +72,11 @@ def scale_matrix(sx: float, sy: float, sz: float) -> np.ndarray:
     return np.array([
         [sx, 0, 0, 0],
         [0, sy, 0, 0],
-        [0, 0, 1, 0],
+        [0, 0, sz, 0],
         [0, 0, 0, 1]
     ])
 
-def scale_matrix_2d(sx: float, sy: float, sz: float) -> np.ndarray:
+def scale_matrix_2d(sx: float, sy: float) -> np.ndarray:
     return np.array([
         [sx, 0, 0],
         [0, sy, 0],

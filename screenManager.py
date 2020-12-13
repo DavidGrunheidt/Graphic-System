@@ -261,7 +261,17 @@ class Handler:
         normalizer.move_window(move_step, 0)
         redraw_all_objects()
 
-    def window_rotate_clicked(sel, btn) -> None:
+    def window_rotate_x_clicked(sel, btn) -> None:
+        rotate_angle = float(gtkBuilder.get_object('window_rotation_rate_entry').get_text())
+        normalizer.rotate_window(rotate_angle, x_axis = True)
+        redraw_all_objects()
+
+    def window_rotate_y_clicked(sel, btn) -> None:
+        rotate_angle = float(gtkBuilder.get_object('window_rotation_rate_entry').get_text())
+        normalizer.rotate_window(rotate_angle, y_axis = True)
+        redraw_all_objects()
+
+    def window_rotate_z_clicked(sel, btn) -> None:
         rotate_angle = float(gtkBuilder.get_object('window_rotation_rate_entry').get_text())
         normalizer.rotate_window(rotate_angle)
         redraw_all_objects()
@@ -271,13 +281,13 @@ class Handler:
         redraw_all_objects()
 
     def set_object_selected(self, user_data) -> None:
-        global object_selected, objScale, objMove, objRotate, rotateAroundWorldCenter, rotateAroundPointCenter
+        global object_selected, objScale, objMove, objRotate, rotate_around_x_axis, rotate_around_y_axis
 
         objScale = False
         objMove = False
         objRotate = False
-        rotateAroundWorldCenter = False
-        rotateAroundPointCenter = False
+        rotate_around_x_axis = False
+        rotate_around_y_axis = False
 
         gtkBuilder.get_object('toggle_object_rotate').set_active(False)
         gtkBuilder.get_object('object_rotate_rate_entry').set_text("")
@@ -326,21 +336,13 @@ class Handler:
             except ValueError:
                 return show_error("Fatores Sx, Sy, Sz de escalonamento devem ser todos floats", window_widget)
 
-        point_of_rotation = []
         if (objRotate):
             try:
                 rotate_rate = float(gtkBuilder.get_object('object_rotate_rate_entry').get_text())
-                if (rotateAroundPointCenter):
-                    try:
-                        point_of_rotation = [float(x) for x in gtkBuilder.get_object('point_of_rotation_entry').get_text().split(',')]
-                        if (len(point_of_rotation) < 2  or len(point_of_rotation) > 3):
-                            return show_error("Ponto de rotação deve ter 2 ou 3 coordenas \n (x,y) ou (x,y,z)", window_widget)
-                    except ValueError:
-                        return show_error("Valores do ponto de rotação devem ser todos floats", window_widget)
             except ValueError:
                 return show_error("Angulo de rotação deve ser float", window_widget)
 
-        objectManager.change_object(object_selected, move_vector, scale_factors, rotate_rate, rotateAroundWorldCenter, rotateAroundPointCenter, point_of_rotation)
+        objectManager.change_object(object_selected, move_vector, scale_factors, rotate_rate, rotate_around_x_axis, rotate_around_y_axis)
         redraw_all_objects()
 
     def toggle_object_scale(self, btn) -> None:
@@ -378,12 +380,11 @@ class Handler:
         gtkBuilder.get_object('button_rotate_around_object_center').set_active(True)
 
     def toggle_rotate_around_world_center(self, btn) -> None:
-        global rotateAroundWorldCenter, rotateAroundPointCenter
+        global rotate_around_x_axis, rotate_around_y_axis
 
         if gtkBuilder.get_object('button_rotate_around_world_center').get_active():
-            rotateAroundWorldCenter = True
-            rotateAroundPointCenter = False
-            rotateAroundPointCenter = False
+            rotate_around_x_axis = True
+            rotate_around_y_axis = False
 
             gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
             gtkBuilder.get_object('button_rotate_around_point_center').set_active(False)
@@ -392,14 +393,14 @@ class Handler:
             self.toggle_rotate_around_object_center(None)
 
     def toggle_rotate_around_object_center(self, btn) -> None:
-        global rotateAroundWorldCenter, rotateAroundPointCenter
+        global rotate_around_x_axis, rotate_around_y_axis
 
         oneOtherSelected = gtkBuilder.get_object('button_rotate_around_world_center').get_active() or gtkBuilder.get_object('button_rotate_around_point_center').get_active()
         thisOneSelected = gtkBuilder.get_object('button_rotate_around_object_center').get_active()
 
         if (not oneOtherSelected) or thisOneSelected:
-            rotateAroundWorldCenter = False
-            rotateAroundPointCenter = False
+            rotate_around_x_axis = False
+            rotate_around_y_axis = False
 
             gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
             gtkBuilder.get_object('button_rotate_around_point_center').set_active(False)
@@ -409,15 +410,14 @@ class Handler:
                 gtkBuilder.get_object('button_rotate_around_object_center').set_active(True)
 
     def toggle_rotate_around_point_center(self, btn) -> None:
-        global rotateAroundWorldCenter, rotateAroundPointCenter
+        global rotate_around_x_axis, rotate_around_y_axis
 
         if gtkBuilder.get_object('button_rotate_around_point_center').get_active():
-            rotateAroundWorldCenter = False
-            rotateAroundPointCenter = True
+            rotate_around_x_axis = False
+            rotate_around_y_axis = True
 
             gtkBuilder.get_object('button_rotate_around_world_center').set_active(False)
             gtkBuilder.get_object('button_rotate_around_object_center').set_active(False)
-            gtkBuilder.get_object('point_of_rotation_entry').show_all()
         else:
             self.toggle_rotate_around_object_center(None)
 

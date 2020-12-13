@@ -22,12 +22,11 @@ def object_coordinates_projection(coordinates: list) -> list:
     new_coordinates = np.array(new_coordinates).dot(move_matrix)
 
     # Rotating window to be parallel to X and Y axes (again we do the opposite, rotating all objects)
-    rotate_matrix = rotate_x_matrix(x_angle).dot(rotate_x_matrix(y_angle))
+    rotate_matrix = rotate_x_matrix(x_angle).dot(rotate_y_matrix(y_angle))
     new_coordinates = new_coordinates.dot(rotate_matrix)
 
     # Ignoring Z coordinate
     return [x[:len(x) - 2].tolist() for x in new_coordinates]
-
 
 def world_to_window_coordinates_transform(my_object: Object) -> list:
     window = objectManager.window
@@ -38,8 +37,7 @@ def world_to_window_coordinates_transform(my_object: Object) -> list:
 
     normalized_coords = []
     for pair in projected_coords:
-        triple = pair + [1]
-        normalized_coords.append(triple)
+        normalized_coords.append(pair + [1])
 
     move_matrix = translate_matrix_2d(-x_wc, -y_wc)
     normalized_coords = np.array(normalized_coords).dot(move_matrix)
@@ -51,7 +49,7 @@ def world_to_window_coordinates_transform(my_object: Object) -> list:
     sx = 1 / (window["xWinMax"] - window["xWinMin"])
     sy = 1 / (window["yWinMax"] - window["yWinMin"])
 
-    zoom_matrix = scale_matrix_2d(sx, sy, 0)
+    zoom_matrix = scale_matrix_2d(sx, sy)
     normalized_coords = normalized_coords.dot(zoom_matrix).dot(window["transformations"])
 
     if my_object.is_bezier:
@@ -65,7 +63,7 @@ def zoom_window(scale: float) -> None:
     window = objectManager.window
     display_file = objectManager.display_file
 
-    zoom_matrix = scale_matrix_2d(scale, scale, 0)
+    zoom_matrix = scale_matrix_2d(scale, scale)
     window["transformations"] = window["transformations"].dot(zoom_matrix)
 
     for obj in display_file:
@@ -83,17 +81,29 @@ def move_window(step_x: float, step_y: float) -> None:
         normalized_coordinates = np.array(display_file[obj].normalizedCoordinates).dot(move_matrix)
         clipper.clipObject(obj, normalized_coordinates)
 
-def rotate_window(rotate_angle: float) -> None:
+def rotate_window(rotate_angle: float, x_axis: bool = False, y_axis: bool = False) -> None:
+    def check_angle_interval(final_angle: float) -> float:
+        if final_angle <= -360:
+            return final_angle + 360
+        elif final_angle >= 360:
+            return final_angle - 360
+        else:
+            return final_angle
+
     window = objectManager.window
-    window_v_up_angle = window["zAngle"]
-    window_v_up_angle -= rotate_angle
+    new_angle = window["zAngle"]
+    if x_axis:
+        new_angle = window["xAngle"]
+    elif y_axis:
+        new_angle = window["yAngle"]
 
-    if window_v_up_angle <= -360:
-        window_v_up_angle += 360
-    elif window_v_up_angle >= 360:
-        window_v_up_angle -= 360
-
-    window["zAngle"] = window_v_up_angle
+    new_angle = check_angle_interval(new_angle - rotate_angle)
+    if x_axis:
+        window["xAngle"] = new_angle
+    elif y_axis:
+        window["yAngle"] = new_angle
+    else:
+        window["zAngle"] = new_angle
 
     display_file = objectManager.display_file
     for obj in display_file:
