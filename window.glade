@@ -247,31 +247,20 @@
                                     <property name="placeholder_text" translatable="yes">°</property>
                                   </object>
                                   <packing>
-                                    <property name="x">59</property>
+                                    <property name="x">30</property>
                                     <property name="y">119</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label_zoom2">
-                                    <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Graus:</property>
-                                  </object>
-                                  <packing>
-                                    <property name="x">8</property>
-                                    <property name="y">125</property>
-                                  </packing>
-                                </child>
-                                <child>
-                                  <object class="GtkButton" id="button_window_rotate">
-                                    <property name="label" translatable="yes">Rodar</property>
+                                  <object class="GtkButton" id="button_window_rotate_x">
+                                    <property name="label" translatable="yes">Rodar X</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
-                                    <signal name="clicked" handler="window_rotate_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="window_rotate_x_clicked" swapped="no"/>
                                   </object>
                                   <packing>
-                                    <property name="x">108</property>
+                                    <property name="x">83</property>
                                     <property name="y">119</property>
                                   </packing>
                                 </child>
@@ -279,11 +268,37 @@
                                   <object class="GtkLabel" id="label_zoom3">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="label" translatable="yes">Rotação:</property>
+                                    <property name="label" translatable="yes">Rotação (Graus):</property>
                                   </object>
                                   <packing>
-                                    <property name="x">49</property>
+                                    <property name="x">23</property>
                                     <property name="y">96</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="button_window_rotate_y">
+                                    <property name="label" translatable="yes">Rodar Y</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="window_rotate_y_clicked" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="x">10</property>
+                                    <property name="y">155</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="button_window_rotate_z">
+                                    <property name="label" translatable="yes">Rodar Z</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="window_rotate_z_clicked" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="x">83</property>
+                                    <property name="y">155</property>
                                   </packing>
                                 </child>
                               </object>
