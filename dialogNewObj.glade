@@ -81,9 +81,9 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="label" translatable="yes">Insira as coordenadas do objeto abaixo da seguinte maneira:
-Ponto - 1 dupla: x1,y1
-Linha - 2 duplas: x1,y1;x2,y2
-Wireframe - 3+ duplas: x1,y2;x2,y2;x3,y3...</property>
+Ponto - 1 tripla: x1,y1,z1
+Linha - 2 triplas: x1,y1,z1;x2,y2,z2
+Wireframe - 3+ triplas: x1,y1,z1;x2,y2,z2;x3,y3,z3...</property>
             <property name="justify">center</property>
           </object>
           <packing>

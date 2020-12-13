@@ -2,6 +2,7 @@ import cairo
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from test_objects import create_test_objects
 
 import object
 import objectManager
@@ -170,20 +171,8 @@ def show_dialog(file_name: str, window_id) -> None:
 
     dialog.show_all()
 
-def test() -> None:
-    obj1 = objectManager.create_new_object(name='Amr', coordinates='60,100;200,200', line_color=[0.9, 0.9, 0.007], is_bezier=False, is_bspline=False)
-    obj2 = objectManager.create_new_object(name='Verm', coordinates='80,150;160,320;300,300', line_color=[0.7, 0.2, 0], is_bezier=False, is_bspline=False)
-    obj3 = objectManager.create_new_object(name='Verd', coordinates='50,250;70,260;90,350;120,200', line_color=[0.1, 0.8, 0], is_bezier=True, is_bspline=False)
-    obj4 = objectManager.create_new_object(name='Verd2', coordinates='13,150;23,280;300,72;320,152', line_color=[0.1, 0.8, 0], is_bezier=True, is_bspline=False)
-    obj5 = objectManager.create_new_object(name='Az', coordinates='20,130;60,210;120,80;170,340;250,130;300,160;320,250;380,100', line_color=[0.3, 0.4, 0.6], is_bezier=False, is_bspline=True)
-    obj6 = objectManager.create_new_object(name='Az2', coordinates='0,100;50,300;180,300;250,0;350,200;450,100;500,400', line_color=[0.3, 0.4, 0.6], is_bezier=False, is_bspline=True)
-
-    objs = [obj1, obj2, obj3, obj4, obj5, obj6]
-
-    for obj in objs:
-        object_list.append_text(obj.name + " (" + obj.type + ")")
-        object_list.show_all()
-        drawn_object(obj)
+def drawn_test_objects() -> None:
+    create_test_objects(object_list, drawn_object)
 
 class Handler:
 
@@ -323,19 +312,19 @@ class Handler:
                 if (len(move_vector) != 2):
                     return show_error("Forneça um vetor valido (Dx, Dy)", window_widget)
             except ValueError:
-                return show_error("Valores Dx, Dy do vetor de translação devem ser todos floats", window_widget)
+                return show_error("Valores Dx, Dy, Dz do vetor de translação devem ser todos floats", window_widget)
 
         if (objScale):
             try:
                 scale_factors = [float(x) for x in gtkBuilder.get_object('object_zoom_entry').get_text().split(',')]
                 if(len(scale_factors) != 2):
-                    return show_error("Forneça fatores de escalonamento validos (Sx, Sy)", window_widget)
+                    return show_error("Forneça fatores de escalonamento validos (Sx, Sy, Sz)", window_widget)
                 else:
                     for x in scale_factors:
                         if (x <= 0):
                             return show_error("Fator de escalonamento deve ser maior que 0 \n (menor que 1 diminui, maior que 1 aumenta)", window_widget)
             except ValueError:
-                return show_error("Fatores Sx, Sy de escalonamento devem ser todos floats", window_widget)
+                return show_error("Fatores Sx, Sy, Sz de escalonamento devem ser todos floats", window_widget)
 
         point_of_rotation = []
         if (objRotate):
@@ -436,7 +425,7 @@ class Handler:
         dialog.destroy()
 
     def button_testar_clicked(self, btn) -> None:
-        test()
+        drawn_test_objects()
         gtkBuilder.get_object('button_testar').hide()
 
 

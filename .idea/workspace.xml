@@ -21,9 +21,12 @@
   <component name="ChangeListManager">
     <list default="true" id="c111bba8-8ef9-418e-ab22-c83a34698b11" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/clipper.py" beforeDir="false" afterPath="$PROJECT_DIR$/clipper.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dialogNewObj.glade" beforeDir="false" afterPath="$PROJECT_DIR$/dialogNewObj.glade" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/matrices.py" beforeDir="false" afterPath="$PROJECT_DIR$/matrices.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/normalizer.py" beforeDir="false" afterPath="$PROJECT_DIR$/normalizer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/objectManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/objectManager.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/screenManager.py" beforeDir="false" afterPath="$PROJECT_DIR$/screenManager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_objects.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_objects.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -102,7 +105,14 @@
       <workItem from="1603158683024" duration="83000" />
       <workItem from="1604090594839" duration="5687000" />
       <workItem from="1604149994500" duration="5448000" />
-      <workItem from="1604155574168" duration="632000" />
+      <workItem from="1604155574168" duration="958000" />
+      <workItem from="1604258126615" duration="190000" />
+      <workItem from="1604346200727" duration="3069000" />
+      <workItem from="1604546454493" duration="135000" />
+      <workItem from="1607600122235" duration="466000" />
+      <workItem from="1607642676230" duration="177000" />
+      <workItem from="1607792865667" duration="6149000" />
+      <workItem from="1607809464018" duration="7365000" />
     </task>
     <servers />
   </component>
@@ -122,26 +132,27 @@
     <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="191" y="110" key="DiffContextDialog" timestamp="1604094748242">
+    <state x="191" y="110" width="1536" height="790" key="DiffContextDialog" timestamp="1607819617688">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="191" y="110" key="DiffContextDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604094748242" />
-    <state x="710" y="143" key="RollbackChangesDialog" timestamp="1604094748884">
+    <state x="191" y="110" width="1536" height="790" key="DiffContextDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1607819617688" />
+    <state x="614" y="182" key="RollbackChangesDialog" timestamp="1607818771629">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="710" y="143" key="RollbackChangesDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604094748884" />
+    <state x="614" y="182" key="RollbackChangesDialog/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1607818771629" />
     <state x="469" y="156" key="SettingsEditor" timestamp="1599943274297">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
     <state x="469" y="156" key="SettingsEditor/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1599943274297" />
-    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1604152265923">
+    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1607817767544">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604152265923" />
-    <state x="668" y="256" width="584" height="582" key="find.popup" timestamp="1604153846523">
+    <state x="583" y="134" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1607817767544" />
+    <state x="668" y="256" width="584" height="582" key="find.popup" timestamp="1607821997906">
       <screen x="0" y="23" width="1920" height="988" />
     </state>
-    <state x="668" y="256" width="584" height="582" key="find.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1604153846523" />
+    <state x="668" y="256" width="584" height="582" key="find.popup/0.23.1920.988/1920.23.1920.1057@0.23.1920.988" timestamp="1607821997906" />
+    <state x="2588" y="272" width="584" height="623" key="find.popup/0.23.1920.988/1920.23.1920.1057@1920.23.1920.1057" timestamp="1607804081178" />
     <state x="625" y="241" width="670" height="676" key="search.everywhere.popup" timestamp="1604152197448">
       <screen x="0" y="23" width="1920" height="988" />
     </state>

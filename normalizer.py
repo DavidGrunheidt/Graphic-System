@@ -1,61 +1,82 @@
 import objectManager
 import clipper
 import numpy as np
-import math
 from object import Object
+from matrices import translate_matrix_2d, identity_matrix_2d, rotate_matrix_2d, scale_matrix_2d, translate_matrix, rotate_x_matrix, rotate_y_matrix
+
+def object_coordinates_projection(coordinates: list) -> list:
+    window = objectManager.window
+    x_angle = -window["xAngle"]
+    y_angle = -window["yAngle"]
+    x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
+    y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
+    z_coord = window["zCoord"]
+
+    new_coordinates = []
+    for triple in coordinates:
+        quadruple = triple + [1]
+        new_coordinates.append(quadruple)
+
+    # Translate window to origin (here we do the opposite, translating all objects)
+    move_matrix = translate_matrix(-x_wc, -y_wc, -z_coord)
+    new_coordinates = np.array(new_coordinates).dot(move_matrix)
+
+    # Rotating window to be parallel to X and Y axes (again we do the opposite, rotating all objects)
+    rotate_matrix = rotate_x_matrix(x_angle).dot(rotate_x_matrix(y_angle))
+    new_coordinates = new_coordinates.dot(rotate_matrix)
+
+    # Ignoring Z coordinate
+    return [x[:len(x) - 2].tolist() for x in new_coordinates]
+
 
 def world_to_window_coordinates_transform(my_object: Object) -> list:
     window = objectManager.window
     x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
     y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
 
-    new_coordinates = []
-    for cord in my_object.coordinates:
-        cord_aux = cord[0:2]
-        cord_aux.append(1)
-        new_coordinates.append(cord_aux)
+    projected_coords = object_coordinates_projection(my_object.coordinates)
 
-    move_vector = [-x_wc, -y_wc]
-    move_matrix = np.array([[1, 0, 0], [0, 1, 0], [move_vector[0], move_vector[1], 1]])
-    new_coordinates = np.array(new_coordinates).dot(move_matrix)
+    normalized_coords = []
+    for pair in projected_coords:
+        triple = pair + [1]
+        normalized_coords.append(triple)
 
-    v_up_angle = -window["vUpAngle"]
-    rotate_matrix = np.array([[math.cos(math.radians(v_up_angle)), -math.sin(math.radians(v_up_angle)), 0],
-                              [math.sin(math.radians(v_up_angle)), math.cos(math.radians(v_up_angle)), 0], [0, 0, 1]])
-    new_coordinates = new_coordinates.dot(rotate_matrix)
+    move_matrix = translate_matrix_2d(-x_wc, -y_wc)
+    normalized_coords = np.array(normalized_coords).dot(move_matrix)
+
+    z_angle = -window["zAngle"]
+    rotate_matrix = rotate_matrix_2d(z_angle)
+    normalized_coords = normalized_coords.dot(rotate_matrix)
 
     sx = 1 / (window["xWinMax"] - window["xWinMin"])
     sy = 1 / (window["yWinMax"] - window["yWinMin"])
-    scale_matrix = np.array([[sx, 0, 0], [0, sy, 0], [0, 0, 1]])
 
-    new_coordinates = new_coordinates.dot(scale_matrix).dot(window["transformations"])
+    zoom_matrix = scale_matrix_2d(sx, sy, 0)
+    normalized_coords = normalized_coords.dot(zoom_matrix).dot(window["transformations"])
 
     if my_object.is_bezier:
-        n_passos = 60
-        # print('\n\n' + str([bezier_aux(t, new_coordinates) for t in np.linspace(0, 1, num=n_passos)]))
-        return [bezier_aux(t, new_coordinates) for t in np.linspace(0, 1, num=n_passos)]
+        return bezier(normalized_coords)
     elif my_object.is_bspline:
-        n_passos = 60
-        return bspline_aux(new_coordinates, n_passos)
+        return bspline(normalized_coords)
     else:
-        return new_coordinates.tolist()
+        return normalized_coords.tolist()
 
 def zoom_window(scale: float) -> None:
     window = objectManager.window
     display_file = objectManager.display_file
 
-    scale_matrix = np.array([[scale, 0, 0], [0, scale, 0], [0, 0, 1]])
-    window["transformations"] = window["transformations"].dot(scale_matrix)
+    zoom_matrix = scale_matrix_2d(scale, scale, 0)
+    window["transformations"] = window["transformations"].dot(zoom_matrix)
 
     for obj in display_file:
-        normalized_coordinates = np.array(display_file[obj].normalizedCoordinates).dot(scale_matrix)
+        normalized_coordinates = np.array(display_file[obj].normalizedCoordinates).dot(zoom_matrix)
         clipper.clipObject(obj, normalized_coordinates)
 
 def move_window(step_x: float, step_y: float) -> None:
     window = objectManager.window
     display_file = objectManager.display_file
 
-    move_matrix = np.array([[1, 0, 0], [0, 1, 0], [step_x, step_y, 1]])
+    move_matrix = translate_matrix_2d(step_x, step_y)
     window["transformations"] = window["transformations"].dot(move_matrix)
 
     for obj in display_file:
@@ -64,18 +85,17 @@ def move_window(step_x: float, step_y: float) -> None:
 
 def rotate_window(rotate_angle: float) -> None:
     window = objectManager.window
-    display_file = objectManager.display_file
-
-    window_v_up_angle = window["vUpAngle"]
-
+    window_v_up_angle = window["zAngle"]
     window_v_up_angle -= rotate_angle
+
     if window_v_up_angle <= -360:
         window_v_up_angle += 360
     elif window_v_up_angle >= 360:
         window_v_up_angle -= 360
 
-    window["vUpAngle"] = window_v_up_angle
+    window["zAngle"] = window_v_up_angle
 
+    display_file = objectManager.display_file
     for obj in display_file:
         normalized_coordinates = world_to_window_coordinates_transform(display_file[obj])
         clipper.clipObject(obj, normalized_coordinates)
@@ -84,47 +104,71 @@ def set_window_original_size():
     window = objectManager.window
     display_file = objectManager.display_file
 
-    window["vUpAngle"] = 0.0
-    window["transformations"] = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    window["xAngle"] = 0.0
+    window["yAngle"] = 0.0
+    window["zAngle"] = 0.0
+    window["transformations"] = identity_matrix_2d
 
     for obj in display_file:
         normalized_coordinates = world_to_window_coordinates_transform(display_file[obj])
         clipper.clipObject(obj, normalized_coordinates)
 
+def bezier(coordinates) -> list:
+    len_coordinates = len(coordinates)
+    new_coords = []
+    n_passos = 60
+
+    for index in range(0, len_coordinates - 3):
+        new_coords += [bezier_aux(t, coordinates[index:index+4]) for t in np.linspace(0, 1, num=n_passos)]
+
+    return new_coords
+
+
 def bezier_aux(t, coordinates) -> list:
     blend_func = np.array([(1 - t) ** 3, 3 * (1 - t) ** 2 * t, 3 * (1 - t) * t ** 2, t ** 3])
     return blend_func.dot(coordinates)
 
-def bspline_aux(coordinates, passos):
-    delta = 1 / passos
+def bspline(coordinates):
+    n_passos = 60
+    delta = 1 / n_passos
 
-    E = np.array([[0, 0, 0, 1], [delta ** 3, delta ** 2, delta, 0], [6 * delta ** 3, 2 * delta ** 2, 0, 0], [6 * delta ** 3, 0, 0, 0]])
+    e_matrix = np.array([
+        [0, 0, 0, 1],
+        [delta ** 3, delta ** 2, delta, 0],
+        [6 * delta ** 3, 2 * delta ** 2, 0, 0],
+        [6 * delta ** 3, 0, 0, 0]
+    ])
 
     new_coords = []
 
     for index in range(0, len(coordinates) - 3):
-        calculated_coords = forward_differences(coordinates[index:index + 4], passos, E)
+        calculated_coords = forward_differences(coordinates[index:index + 4], n_passos, e_matrix)
         new_coords += calculated_coords
 
     return new_coords
 
-def forward_differences(coordinates, passos, E):
-    bspline_matrix = np.array([[-1, 3, -3, 1], [3, -6, 3, 0], [-3, 0, 3, 0], [1, 4, 1, 0], ]) / 6
+def forward_differences(coordinates, passos, e_matrix):
+    bspline_matrix = np.array([
+        [-1, 3, -3, 1],
+        [3, -6, 3, 0],
+        [-3, 0, 3, 0],
+        [1, 4, 1, 0]
+    ]) / 6
 
-    coord_aux_x = bspline_matrix.dot([coord[0] for coord in coordinates])
-    coord_aux_y = bspline_matrix.dot([coord[1] for coord in coordinates])
+    coord_x = bspline_matrix.dot([triple[0] for triple in coordinates])
+    coord_y = bspline_matrix.dot([triple[1] for triple in coordinates])
 
-    fx = E.dot(coord_aux_x)
-    fy = E.dot(coord_aux_y)
+    fx = e_matrix.dot(coord_x)
+    fy = e_matrix.dot(coord_y)
 
-    new_coords = [[fx[0], fy[0], 1]]
+    new_coords = [[fx[0], fy[0], 1, 1]]
 
     for _ in range(1, passos + 1):
         for k in range(len(fx) - 1):
             fx[k] += fx[k + 1]
             fy[k] += fy[k + 1]
 
-        new_coords.append([fx[0], fy[0], 1])
+        new_coords.append([fx[0], fy[0], 1, 1])
 
     return new_coords
 

@@ -1,10 +1,10 @@
 from object import Object
 from functools import reduce
+from matrices import identity_matrix, identity_matrix_2d, translate_matrix, rotate_z_matrix, scale_matrix
 
 import normalizer
 import clipper
 import numpy as np
-import math
 
 # 2D Window and Viewport starts with 0 as all coordinates default values.
 window = {
@@ -14,8 +14,11 @@ window = {
 	"yWinMax": 0.0,
 	"xDif": 0.0,
 	"yDif": 0.0,
-	"vUpAngle": 0.0,
-	"transformations": np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+	"zCoord": 0.0,
+	"xAngle": 0.0,
+	"yAngle": 0.0,
+	"zAngle": 0.0,
+	"transformations": identity_matrix_2d
 }
 
 viewport = {
@@ -39,20 +42,15 @@ def create_new_object(name: str, coordinates: str, line_color: list, is_bezier: 
 		try:
 			coordinates = [float(x) for x in coordinates]
 		except ValueError:
-			raise ValueError("Insira coordenadas validas. \n Coordenadas devem todas ser duplas de números inteiros ou decimais.")
+			raise ValueError("Insira coordenadas validas. \n Coordenadas devem todas ser triplas de números inteiros ou decimais.")
 
 		coordinates_matrix.append([])
-
-		if len(coordinates) == 2 or len(coordinates) == 3:
+		if len(coordinates) == 3:
 			for coordinate in coordinates:
 				coordinates_matrix[index_row].append(coordinate)
-
-			if len(coordinates) == 2:
-				coordinates_matrix[index_row].append(0)
-
 			index_row += 1
 		else:
-			raise ValueError("Coordenadas devem ser duplas ou triplas")
+			raise ValueError("Coordenadas devem ser triplas")
 
 	new_object = Object(name, coordinates_matrix, line_color, is_bezier, is_bspline)
 	display_file[name] = new_object
@@ -65,9 +63,9 @@ def create_new_object(name: str, coordinates: str, line_color: list, is_bezier: 
 
 	return new_object
 
-def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate: float, rotateAroundWorldCenter: bool, rotateAroundPointCenter: bool, pointOfRotation: 'list[float]') -> None:
+def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate: float, rotate_x: bool, rotate_y: bool, pointOfRotation: 'list[float]') -> None:
 	global display_file, window
-	transformation_matrix = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+	transformation_matrix = identity_matrix
 	coordinates = display_file[name].coordinates
 
 	cx = reduce(lambda x, y: x + y, [x[0] for x in coordinates])/len(coordinates)
@@ -75,29 +73,32 @@ def change_object(name: str, move_vector: list, scale_factors: list, rotate_rate
 
 	# Obs: Matrix multiplication will be on the order Rotate Matrix * Move Matrix * Scale Matrix always.
 	if rotate_rate:
-		rotate_matrix = np.array([[math.cos(math.radians(rotate_rate)), -math.sin(math.radians(rotate_rate)), 0], [math.sin(math.radians(rotate_rate)), math.cos(math.radians(rotate_rate)), 0], [0, 0, 1]])
+		dx, dy = cx, cy
+		rotate_matrix = rotate_z_matrix(rotate_rate)
 
-		dx = cx
-		dy = cy
-
-		if rotateAroundWorldCenter:
+		if rotate_x:
 			dx = (window["xWinMax"] - window["xWinMin"])/2
 			dy = (window["yWinMax"] - window["yWinMin"])/2
 
-		elif rotateAroundPointCenter:
+		elif rotate_y:
 			dx = pointOfRotation[0]
 			dy = pointOfRotation[1]
 
-		transformation_matrix = (np.array([[1, 0, 0], [0, 1, 0], [-dx, -dy, 1]]).dot(rotate_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [dx, dy, 0]]))
+		transformation_matrix = (np.array([
+			[1, 0, 0], [0, 1, 0],
+			[-dx, -dy, 1]
+		]).dot(rotate_matrix)).dot(translate_matrix(dx, dy, 0))
 
 	if move_vector:
-		move_matrix = np.array([[1, 0, 0], [0, 1, 0], [move_vector[0], move_vector[1], 1]])
+		move_matrix = translate_matrix(move_vector[0], move_vector[1], 0)
 		transformation_matrix = transformation_matrix.dot(move_matrix)
 
 	if scale_factors:
-		scale_matrix = np.array([[scale_factors[0], 0, 0], [0, scale_factors[1], 0], [0, 0, 1]])
+		origin_translate_matrix = translate_matrix(-cx, -cy, 0)
+		zoom_matrix = scale_matrix(scale_factors[0], scale_factors[1], 0)
+		back_translate_matrix = translate_matrix(cx, cy, 0)
 
-		transformation_matrix = ((transformation_matrix.dot(np.array([[1, 0, 0], [0, 1, 0], [-cx, -cy, 1]]))).dot(scale_matrix)).dot(np.array([[1, 0, 0], [0, 1, 0], [cx, cy, 1]]))
+		transformation_matrix = transformation_matrix.dot(origin_translate_matrix).dot(zoom_matrix).dot(back_translate_matrix)
 
 	coordinates_aux = []
 	for x in coordinates:
@@ -123,13 +124,13 @@ def viewport_transform(normalized_coordinates: list) -> list:
 		coordinates_on_viewport.append([])
 
 		# xw = triple[0]
-		xVp = ((triple[0] - x_min) / x_dif) * viewport["xDif"]
+		x_vp = ((triple[0] - x_min) / x_dif) * viewport["xDif"]
 
 		# yw = triple[1]
-		yVp = (1 - ((triple[1] - y_min) / y_dif)) * viewport["yDif"]
+		y_vp = (1 - ((triple[1] - y_min) / y_dif)) * viewport["yDif"]
 
-		coordinates_on_viewport[index_row].append(xVp)
-		coordinates_on_viewport[index_row].append(yVp)
+		coordinates_on_viewport[index_row].append(x_vp)
+		coordinates_on_viewport[index_row].append(y_vp)
 
 		index_row += 1
 
