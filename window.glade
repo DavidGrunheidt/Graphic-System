@@ -134,7 +134,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">102</property>
-                                    <property name="y">3</property>
+                                    <property name="y">1</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -149,7 +149,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">98</property>
-                                    <property name="y">59</property>
+                                    <property name="y">57</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -164,7 +164,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">80</property>
-                                    <property name="y">31</property>
+                                    <property name="y">29</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -179,7 +179,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">120</property>
-                                    <property name="y">31</property>
+                                    <property name="y">29</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -235,7 +235,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">19</property>
-                                    <property name="y">63</property>
+                                    <property name="y">53</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -248,7 +248,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">30</property>
-                                    <property name="y">119</property>
+                                    <property name="y">139</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -261,7 +261,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">83</property>
-                                    <property name="y">119</property>
+                                    <property name="y">139</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -272,7 +272,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">23</property>
-                                    <property name="y">96</property>
+                                    <property name="y">116</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -285,7 +285,7 @@
                                   </object>
                                   <packing>
                                     <property name="x">10</property>
-                                    <property name="y">155</property>
+                                    <property name="y">175</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -298,7 +298,33 @@
                                   </object>
                                   <packing>
                                     <property name="x">83</property>
-                                    <property name="y">155</property>
+                                    <property name="y">175</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="button_forward">
+                                    <property name="label" translatable="yes">Forward</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="window_move_forward_clicked" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="x">7</property>
+                                    <property name="y">86</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkButton" id="button_back">
+                                    <property name="label" translatable="yes">Backward</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">True</property>
+                                    <signal name="clicked" handler="window_move_backward_clicked" swapped="no"/>
+                                  </object>
+                                  <packing>
+                                    <property name="x">80</property>
+                                    <property name="y">86</property>
                                   </packing>
                                 </child>
                               </object>
