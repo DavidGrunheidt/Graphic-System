@@ -13,6 +13,7 @@ surface = None
 
 zoom_scale = 0.8
 move_step = 0.1
+move_z_step = 10
 
 def cgi_init() -> None:
     global gtkBuilder, window_widget, drawing_area, object_list, scale, change_obj_options
@@ -264,6 +265,14 @@ class Handler:
 
     def window_moveLeft_clicked(self,btn) -> None:
         normalizer.move_window(move_step, 0)
+        redraw_all_objects()
+
+    def window_move_forward_clicked(self,btn) -> None:
+        normalizer.move_window_z_axis(-move_z_step)
+        redraw_all_objects()
+
+    def window_move_backward_clicked(self,btn) -> None:
+        normalizer.move_window_z_axis(move_z_step)
         redraw_all_objects()
 
     def window_rotate_x_clicked(sel, btn) -> None:

@@ -1,12 +1,11 @@
 from objectManager import create_new_object
 
 def create_test_objects(object_list, drawn_object) -> None:
-    obj1 = yellow_line()
-    obj2 = red_triangle()
-    obj3 = green_square()
-    obj4 = red_cube()
+    obj1 = red_cube()
+    obj2 = green_square()
+    obj3 = red_triangle()
 
-    objs = [obj1, obj2, obj3, obj4]
+    objs = [obj1, obj2, obj3]
 
     for obj in objs:
         object_list.append_text(obj.name + " (" + obj.type + ")")
@@ -25,7 +24,7 @@ def yellow_line():
 def red_triangle():
     return create_new_object(
         name='VermTri',
-        coordinates='400,150,0;450,320,200;500,300,0',
+        coordinates='400,150,-50;450,320,-40;500,300,-50',
         line_color=[0.7, 0.2, 0],
         is_bezier=False,
         is_bspline=False
@@ -60,7 +59,7 @@ def yellow_plane():
 def red_cube():
     return create_new_object(
         name='VermCube',
-        coordinates='50,50,50;150,50,50;150,150,50;50,150,50;50,50,150;150,50,150;150,150,150;50,150,150',
+        coordinates='50,50,-50;150,50,-50;150,150,-50;50,150,-50;50,50,-30;150,50,-30;150,150,-30;50,150,-30',
         line_color=[0.7, 0.2, 0],
         is_bezier=False,
         is_bspline=False,
@@ -70,7 +69,7 @@ def red_cube():
 def green_square():
     return create_new_object(
         name='VerdQuad',
-        coordinates='600,100,0;700,100,0;700,200,0;600,200,0',
+        coordinates='600,100,-50;700,100,-40;700,200,-50;600,200,-40',
         line_color=[0.1, 0.8, 0],
         is_bezier=False,
         is_bspline=False

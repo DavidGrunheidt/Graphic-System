@@ -14,7 +14,7 @@ window = {
 	"yWinMax": 0.0,
 	"xDif": 0.0,
 	"yDif": 0.0,
-	"zCoord": 700,
+	"zCoord": -100,
 	"xAngle": 0.0,
 	"yAngle": 0.0,
 	"zAngle": 0.0,

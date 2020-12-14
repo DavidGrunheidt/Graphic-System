@@ -33,7 +33,18 @@ def object_coordinates_projection(coordinates: list, perspective: bool = False) 
     new_coordinates = new_coordinates.dot(rotate_matrix)
 
     if perspective:
-        new_coordinates = new_coordinates.dot(perspective_matrix(focus_distance))
+        perspective_coordinates = []
+        for triple in new_coordinates[:len(new_coordinates) - 1]:
+            x = triple[0]
+            y = triple[1]
+            z = triple[2]
+
+            xp = x/(z/focus_distance)
+            yp = y/(z/focus_distance)
+
+            perspective_coordinates.append([xp, yp])
+        # Ignoring Z coordinate
+        return perspective_coordinates
 
     # Ignoring Z coordinate
     return [x[:len(x) - 2].tolist() for x in new_coordinates]
@@ -89,6 +100,15 @@ def move_window(step_x: float, step_y: float) -> None:
 
     for obj in display_file:
         normalized_coordinates = np.array(display_file[obj].normalizedCoordinates).dot(move_matrix)
+        clipper.clipObject(obj, normalized_coordinates)
+
+def move_window_z_axis(step_z: float) -> None:
+    window = objectManager.window
+    window["zCoord"] += step_z
+
+    display_file = objectManager.display_file
+    for obj in display_file:
+        normalized_coordinates = world_to_window_coordinates_transform(display_file[obj])
         clipper.clipObject(obj, normalized_coordinates)
 
 def rotate_window(rotate_angle: float, x_axis: bool = False, y_axis: bool = False) -> None:

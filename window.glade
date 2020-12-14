@@ -303,7 +303,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button_forward">
-                                    <property name="label" translatable="yes">Forward</property>
+                                    <property name="label" translatable="yes">Backward</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
@@ -316,7 +316,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button_back">
-                                    <property name="label" translatable="yes">Backward</property>
+                                    <property name="label" translatable="yes">Forward</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
