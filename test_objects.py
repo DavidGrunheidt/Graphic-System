@@ -16,7 +16,7 @@ def create_test_objects(object_list, drawn_object) -> None:
 def yellow_line():
     return create_new_object(
         name='AmrLine',
-        coordinates='300,250,0;450,500,0',
+        coordinates='300,250,200;450,500,300',
         line_color=[0.9, 0.9, 0.007],
         is_bezier=False,
         is_bspline=False
@@ -25,7 +25,7 @@ def yellow_line():
 def red_triangle():
     return create_new_object(
         name='VermTri',
-        coordinates='400,150,0;450,320,0;500,300,0',
+        coordinates='400,150,0;450,320,200;500,300,0',
         line_color=[0.7, 0.2, 0],
         is_bezier=False,
         is_bspline=False
@@ -70,7 +70,7 @@ def red_cube():
 def green_square():
     return create_new_object(
         name='VerdQuad',
-        coordinates='600,100,0.1;700,100,0.1;700,200,1;600,200,0.1',
+        coordinates='600,100,0;700,100,0;700,200,0;600,200,0',
         line_color=[0.1, 0.8, 0],
         is_bezier=False,
         is_bspline=False

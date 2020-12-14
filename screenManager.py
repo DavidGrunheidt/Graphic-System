@@ -215,7 +215,7 @@ class Handler:
                 is_bspline = True
 
             try:
-                newObj = objectManager.create_new_object(newObj_name, newObj_coordinates_raw, rgb, is_bezier, is_bspline)
+                newObj = objectManager.create_new_object(newObj_name, newObj_coordinates_raw, rgb, is_bezier, is_bspline, '3D' in newObj_name)
             except ValueError as e:
                 return show_error(str(e), dialog)
 

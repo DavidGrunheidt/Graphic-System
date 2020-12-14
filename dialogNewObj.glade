@@ -56,7 +56,7 @@
           <object class="GtkLabel" id="label_inform_object_name">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="label" translatable="yes">Informe o nome do objeto:</property>
+            <property name="label" translatable="yes">Informe o nome do objeto: (Objetos 3D devem ter 3D no nome)</property>
             <property name="justify">center</property>
           </object>
           <packing>

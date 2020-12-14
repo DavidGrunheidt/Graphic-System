@@ -2,15 +2,22 @@ import objectManager
 import clipper
 import numpy as np
 from object import Object
-from matrices import translate_matrix_2d, identity_matrix_2d, rotate_matrix_2d, scale_matrix_2d, translate_matrix, rotate_x_matrix, rotate_y_matrix
+from matrices import translate_matrix_2d, identity_matrix_2d, rotate_matrix_2d, scale_matrix_2d, translate_matrix, rotate_x_matrix, rotate_y_matrix, perspective_matrix
 
-def object_coordinates_projection(coordinates: list) -> list:
+def object_coordinates_projection(coordinates: list, perspective: bool = False) -> list:
     window = objectManager.window
-    x_angle = -window["xAngle"]
-    y_angle = -window["yAngle"]
-    x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
-    y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
+
+    window_x_center = (window["xWinMax"] - window["xWinMin"]) / 2
+    window_y_center = (window["yWinMax"] - window["yWinMin"]) / 2
+
+    window_x_angle = -window["xAngle"]
+    window_y_angle = -window["yAngle"]
+
+    focus_distance = window["focusDistance"]
     z_coord = window["zCoord"]
+
+    if perspective:
+        z_coord -= focus_distance
 
     new_coordinates = []
     for triple in coordinates:
@@ -18,12 +25,15 @@ def object_coordinates_projection(coordinates: list) -> list:
         new_coordinates.append(quadruple)
 
     # Translate window to origin (here we do the opposite, translating all objects)
-    move_matrix = translate_matrix(-x_wc, -y_wc, -z_coord)
+    move_matrix = translate_matrix(-window_x_center, -window_y_center, -z_coord)
     new_coordinates = np.array(new_coordinates).dot(move_matrix)
 
     # Rotating window to be parallel to X and Y axes (again we do the opposite, rotating all objects)
-    rotate_matrix = rotate_x_matrix(x_angle).dot(rotate_y_matrix(y_angle))
+    rotate_matrix = rotate_x_matrix(window_x_angle).dot(rotate_y_matrix(window_y_angle))
     new_coordinates = new_coordinates.dot(rotate_matrix)
+
+    if perspective:
+        new_coordinates = new_coordinates.dot(perspective_matrix(focus_distance))
 
     # Ignoring Z coordinate
     return [x[:len(x) - 2].tolist() for x in new_coordinates]
@@ -33,7 +43,7 @@ def world_to_window_coordinates_transform(my_object: Object) -> list:
     x_wc = (window["xWinMax"] - window["xWinMin"]) / 2
     y_wc = (window["yWinMax"] - window["yWinMin"]) / 2
 
-    projected_coords = object_coordinates_projection(my_object.coordinates)
+    projected_coords = object_coordinates_projection(my_object.coordinates, perspective = True)
 
     normalized_coords = []
     for pair in projected_coords:

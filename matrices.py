@@ -82,3 +82,11 @@ def scale_matrix_2d(sx: float, sy: float) -> np.ndarray:
         [0, sy, 0],
         [0, 0, 1],
     ])
+
+def perspective_matrix(d: float) -> np.ndarray:
+    return np.array([
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 1/d, 0]
+    ])
